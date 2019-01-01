@@ -26,12 +26,10 @@
 
 (defn part2 []
   (->> (for [i (range 97 123)
-             :let [c (char i)
-                   C (char (- i 32))
+             :let [c (char i), C (char (- i 32))
                    s (string/replace input (re-pattern (str "[" c C "]")) "")]]
-         [c (count (react s))])
-       (apply min-key second)
-       second))
+         (count (react s)))
+       (apply min)))
 
 (comment
   (= 11540 (part1))
