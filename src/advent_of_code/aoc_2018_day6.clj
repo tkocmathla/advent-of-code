@@ -20,21 +20,26 @@
 (defn infinites [grid]
   (distinct (concat (first grid) (last grid) (map first grid) (map last grid))))
 
-(defn grid [goals]
+(defn grid [goals pred]
   (for [x (range (inc (apply max (map first goals))))]
     (for [y (range (inc (apply max (map second goals))))
           :let [m (distance goals [x y])
-                [coord i] (apply min-key val m)]]
-      (when (<= ((frequencies (vals m)) i) 1)
+                [coord i] (apply min-key val m)] ]
+      (when (pred m i)
         coord))))
 
 (defn part1 [goals]
-  (let [g (grid goals)]
+  (let [g (grid goals (fn [m i] (<= ((frequencies (vals m)) i) 1)))]
     (->> (apply concat g)
          frequencies
          (#(apply dissoc % (infinites g)))
          vals
          (apply max))))
 
+(defn part2 [goals]
+  (let [g (grid goals (fn [m _] (< (reduce + (vals m)) 10000)))]
+    (count (remove nil? (apply concat g)))))
+
 (comment
-  (= 3882 (part1 input)))
+  (= 3882 (part1 input))
+  (= 43852 (part2 input)))
