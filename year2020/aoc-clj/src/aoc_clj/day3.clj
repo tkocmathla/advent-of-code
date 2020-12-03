@@ -13,7 +13,7 @@
   (let [w (count (first lines))
         h (count lines)
         move (fn [[n y x]]
-               [(+ n (if (= \# (get-in lines [y x])) 1 0))
+               [(cond-> n (= \# (get-in lines [y x])) inc)
                 (+ y dy)
                 (mod (+ x dx) w)])]
     (->> [0 0 0] (iterate move) (drop h) ffirst)))
