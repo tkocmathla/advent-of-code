@@ -23,10 +23,8 @@
   (apply max (map seat lines)))
 
 (defn p2 [lines]
-  (->> (map seat lines)
-       sort
-       (reduce (fn [a b] (if (= b (inc a)) b a)))
-       inc))
+  (reduce (fn [a b] (if (= b (inc a)) b (reduced (inc a))))
+          (sort (map seat lines))))
 
 (comment
   (= 955 (p1 input))
