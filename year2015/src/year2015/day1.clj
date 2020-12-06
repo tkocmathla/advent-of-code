@@ -8,10 +8,10 @@
        io/resource
        slurp))
 
-(defn part1 [s]
+(defn p1 [s]
   (reduce (fn [n x] ((case x \( inc \) dec) n)) 0 s))
 
-(defn part2 [s]
+(defn p2 [s]
   (->> (iterate (fn [[i n [c & s]]] [(inc i) ((case c \( inc \) dec) n) s]) [0 0 s])
        (drop-while (comp (complement neg?) second))
        ffirst))
