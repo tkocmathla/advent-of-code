@@ -11,6 +11,13 @@
        string/split-lines
        (mapv read-string)))
 
+(def test-input2
+  (->> "day10_test2.txt"
+       io/resource
+       slurp
+       string/split-lines
+       (mapv read-string)))
+
 (def input
   (->> "day10.txt"
        io/resource
@@ -22,10 +29,9 @@
   (->> [0 1 0 (set jolts)]
        (iterate
          (fn [[ones threes j js]]
-           (let [one (js (+ j 1)), two (js (+ j 2)), three (js (+ j 3))]
+           (let [one (js (+ j 1)), three (js (+ j 3))]
              (cond
                one [(inc ones) threes one (disj js one)]
-               two [ones threes two (disj js two)]
                three [ones (inc threes) three (disj js three)]))))
        (drop-while (comp seq last))
        ((fn [[[ones threes]]] (* ones threes)))))
