@@ -23,14 +23,16 @@
     (->> [ops [0 0] 90]
          (iterate
            (fn [[[[op mag] & ops'] pos dir]]
+             #_(prn :op op :mag mag :pos pos :dir dir :deg->dydx (deg->dydx dir) )
+             #_(prn (nth (iterate (partial map + (deg->dydx dir)) pos) mag))
              (case op
-               \N [ops' (nth (iterate (partial map + [-1 0]) pos) mag) dir]
-               \S [ops' (nth (iterate (partial map + [1 0]) pos) mag) dir]
-               \E [ops' (nth (iterate (partial map + [0 1]) pos) mag) dir]
-               \W [ops' (nth (iterate (partial map + [0 -1]) pos) mag) dir]
+               \N [ops' (nth (iterate (partial mapv + [-1 0]) pos) mag) dir]
+               \S [ops' (nth (iterate (partial mapv + [1 0]) pos) mag) dir]
+               \E [ops' (nth (iterate (partial mapv + [0 1]) pos) mag) dir]
+               \W [ops' (nth (iterate (partial mapv + [0 -1]) pos) mag) dir]
                \L [ops' pos (mod (+ dir (- 360 mag)) 360)]
                \R [ops' pos (mod (+ dir mag) 360)]
-               \F [ops' (nth (iterate (partial map + (deg->dydx dir)) pos) mag) dir])))
+               \F [ops' (nth (iterate (partial mapv + (deg->dydx dir)) pos) mag) dir])))
          (drop-while (comp seq first))
          ((fn [[[_ [dy dx]]]] (+ (Math/abs dy) (Math/abs dx)))))))
 
@@ -39,13 +41,13 @@
        (iterate
          (fn [[[[op mag] & ops'] ship waypt]]
            (case op
-             \N [ops' ship (nth (iterate (partial map + [-1 0]) waypt) mag)]
-             \S [ops' ship (nth (iterate (partial map + [1 0]) waypt) mag)]
-             \E [ops' ship (nth (iterate (partial map + [0 1]) waypt) mag)]
-             \W [ops' ship (nth (iterate (partial map + [0 -1]) waypt) mag)]
+             \N [ops' ship (nth (iterate (partial mapv + [-1 0]) waypt) mag)]
+             \S [ops' ship (nth (iterate (partial mapv + [1 0]) waypt) mag)]
+             \E [ops' ship (nth (iterate (partial mapv + [0 1]) waypt) mag)]
+             \W [ops' ship (nth (iterate (partial mapv + [0 -1]) waypt) mag)]
              \L [ops' ship (nth (iterate (fn [[y x]] [(- x) y]) waypt) (quot mag 90))]
              \R [ops' ship (nth (iterate (fn [[y x]] [x (- y)]) waypt) (quot mag 90))]
-             \F [ops' (nth (iterate (partial map + waypt) ship) mag) waypt])))
+             \F [ops' (nth (iterate (partial mapv + waypt) ship) mag) waypt])))
        (drop-while (comp seq first))
        ((fn [[[_ [dy dx]]]] (+ (Math/abs dy) (Math/abs dx))))))
 
