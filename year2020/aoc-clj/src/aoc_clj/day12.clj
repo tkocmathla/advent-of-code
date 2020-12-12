@@ -23,8 +23,6 @@
     (->> [ops [0 0] 90]
          (iterate
            (fn [[[[op mag] & ops'] pos dir]]
-             #_(prn :op op :mag mag :pos pos :dir dir :deg->dydx (deg->dydx dir) )
-             #_(prn (nth (iterate (partial map + (deg->dydx dir)) pos) mag))
              (case op
                \N [ops' (nth (iterate (partial mapv + [-1 0]) pos) mag) dir]
                \S [ops' (nth (iterate (partial mapv + [1 0]) pos) mag) dir]
