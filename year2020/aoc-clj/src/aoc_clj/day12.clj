@@ -23,7 +23,6 @@
     (->> [ops [0 0] 90]
          (iterate
            (fn [[[[op mag] & ops'] pos dir]]
-             (prn :pos pos) ; FIXME stack overflow error without this line !?
              (case op
                \N [ops' (nth (iterate (partial map + [-1 0]) pos) mag) dir]
                \S [ops' (nth (iterate (partial map + [1 0]) pos) mag) dir]
@@ -38,8 +37,7 @@
 (defn p2 [ops]
   (->> [ops [0 0] [-1 10]]
        (iterate
-         (fn [[[[op mag] & ops'] ship [wy wx :as waypt]]]
-           (prn ship) ; FIXME stack overflow error without this line !?
+         (fn [[[[op mag] & ops'] ship waypt]]
            (case op
              \N [ops' ship (nth (iterate (partial map + [-1 0]) waypt) mag)]
              \S [ops' ship (nth (iterate (partial map + [1 0]) waypt) mag)]
@@ -55,4 +53,4 @@
   (= 25 (p1 test-input))
   (= 2297 (p1 input))
   (= 286 (p2 test-input))
-  (= (p2 input)))
+  (= 89984 (p2 input)))
