@@ -7,19 +7,23 @@
 (def test-input [0, 3, 6])
 (def input [9, 3, 1, 0, 8, 4])
 
-(defn p1 [nums]
+(defn solve [nums end]
   (let [turn (inc (count nums))]
-    (->> [turn (last nums) (into {} (map (fn [x i] [x (list i)]) (butlast nums) (iterate inc 1)))]
+    (->> [turn (last nums) (into {} (map vector (butlast nums) (iterate inc 1)))]
          (iterate
            (fn [[i x m]]
-             (if (nil? (m x))
-               [(inc i) 0 (assoc m x (list (dec i)))]
-               [(inc i) (- (dec i) (peek (m x))) (update m x conj (dec i))])))
-         (drop-while (comp (partial >= 2020) first))
+             (let [prev (m x)]
+               (if-not prev
+                 [(inc i) 0 (assoc m x (dec i))]
+                 [(inc i) (- (dec i) prev) (assoc m x (dec i))]))))
+         (drop-while (comp (partial >= end) first))
          first second)))
+
+(defn p1 [nums] (solve nums 2020))
+(defn p2 [nums] (solve nums 30000000))
 
 (comment
   (= 436 (p1 test-input))
   (= 371 (p1 input))
-  (= (p2 test-input2))
-  (= (p2 input)))
+  (= 175594 (p2 test-input))
+  (= 352 (p2 input)))
