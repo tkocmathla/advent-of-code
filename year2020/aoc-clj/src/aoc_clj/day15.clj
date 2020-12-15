@@ -12,10 +12,9 @@
     (->> [turn (last nums) (into {} (map vector (butlast nums) (iterate inc 1)))]
          (iterate
            (fn [[i x m]]
-             (let [prev (m x)]
-               (if-not prev
-                 [(inc i) 0 (assoc m x (dec i))]
-                 [(inc i) (- (dec i) prev) (assoc m x (dec i))]))))
+             (if-let [prev (m x)]
+               [(inc i) (- (dec i) prev) (assoc m x (dec i))]
+               [(inc i) 0 (assoc m x (dec i))])))
          (drop-while (comp (partial >= end) first))
          first second)))
 
