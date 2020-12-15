@@ -1,8 +1,4 @@
-(ns aoc-clj.day15
- (:require
-    [clojure.java.io :as io]
-    [clojure.pprint :refer [pprint]]
-    [clojure.string :as string]))
+(ns aoc-clj.day15)
 
 (def test-input [0, 3, 6])
 (def input [9, 3, 1, 0, 8, 4])
