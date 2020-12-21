@@ -1,4 +1,4 @@
-(ns aoc-clj.day20
+(ns aoc-clj.day19
  (:require
     [clojure.java.io :as io]
     [clojure.pprint :refer [pprint]]
@@ -6,8 +6,8 @@
     [instaparse.core :as insta]))
 
 (defn parse [file] (->> file io/resource slurp string/split-lines))
-(def test-input (parse "day20_test.txt"))
-(def input (parse "day20.txt"))
+(def test-input (parse "day19_test.txt"))
+(def input (parse "day19.txt"))
 
 (defn parser [lines]
   (let [[a b c] (partition-by (partial re-find #"^0:") lines)]
