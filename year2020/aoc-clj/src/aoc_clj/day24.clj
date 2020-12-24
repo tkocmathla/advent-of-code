@@ -3,6 +3,8 @@
     [clojure.java.io :as io]
     [clojure.string :as string]))
 
+; https://www.redblobgames.com/grids/hexagons/#coordinates
+
 (defn parse [file] (->> file io/resource slurp string/split-lines))
 (def test-input (parse "day24_test.txt"))
 (def input (parse "day24.txt"))
