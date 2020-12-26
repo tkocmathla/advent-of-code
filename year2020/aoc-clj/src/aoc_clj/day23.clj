@@ -3,29 +3,39 @@
 (def test-input [3 8 9 1 2 5 4 6 7])
 (def input [1 8 6 5 2 4 9 7 3])
 
-(defn dest [cups cup picks]
+(defn parse [v] (into {} (map vector v (rest (cycle v)))))
+(defn unparse [m] (take (dec (count m)) (iterate m (m 1))))
+
+(defn dest [cup max-cup picks]
   (cond
-    (zero? cup) (recur cups (apply max cups) picks)
-    (picks cup) (recur cups (dec cup) picks)
+    (zero? cup) (recur max-cup max-cup picks)
+    (picks cup) (recur (dec cup) max-cup picks)
     :else cup))
 
-(defn shift [cups]
-  (let [[pre [_ & post]] (split-with (complement #{1}) cups)]
-    (concat post pre)))
+(defn solve [cup cups moves]
+  (let [max-cup (apply max (keys cups))]
+    (->> [cup (transient cups)]
+         (iterate
+           (fn [[c cs]]
+             (let [p0 (cs c), p1 (cs p0), p2 (cs p1)
+                   i (dest (dec c) max-cup #{p0 p1 p2})]
+               [(cs p2)
+                (assoc! cs c (cs p2), i p0, p2 (cs i))])))
+         (#(nth % moves))
+         second
+         persistent!)))
 
-(defn p1 [cups]
-  (->> cups
-       (iterate
-         (fn [[cup x y z & xs]]
-           (let [i (dest cups (dec cup) #{x y z})
-                 [pre [_ & post]] (split-with (complement #{i}) xs)]
-             (concat pre [i x y z] post [cup]))))
-       (#(nth % 100))
-       shift
-       (apply str)))
+(defn p1 [[cup :as cups]]
+  (apply str (unparse (solve cup (parse cups) 100))))
+
+(defn p2 [[cup :as cups]]
+  (let [lo (inc (apply max cups))
+        hi (inc 1e6)
+        cups' (concat cups (range lo hi))]
+    (apply * (take 2 (unparse (solve cup (parse cups') 1e7))))))
 
 (comment
   (= "67384529" (p1 test-input))
   (= "45983627" (p1 input))
-  (= (p2 test-input))
-  (= (p2 input)))
+  (= 149245887792 (p2 test-input))
+  (= 111080192688 (p2 input)))
