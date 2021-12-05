@@ -1,6 +1,8 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
+use itertools::Itertools;
+
 use year2021::io;
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash)]
@@ -34,31 +36,24 @@ fn part1(lines: &Vec<Line>) -> usize {
     lines
       .iter()
       .filter(|l| l.2 == Some(0.0) || l.2 == None)
-      .fold(HashMap::new(), |mut m, line| {
-          for x in line.0.0..=line.1.0 {
-              for y in line.0.1..=line.1.1 {
-                   *m.entry(Point(x,y)).or_insert(0) += 1;
-              }
-          }
-          m
-    }).values().filter(|&&x| x > 1).count()
+      .flat_map(|l| (l.0.0..=l.1.0).cartesian_product(l.0.1..=l.1.1).map(|(x, y)| Point(x, y)).collect::<Vec<Point>>())
+      .fold(HashMap::new(), |mut m, p| { m.entry(p).and_modify(|c| *c += 1).or_insert(1); m })
+      .values().filter(|&&x| x > 1).count()
 }
 
 fn part2(lines: &Vec<Line>) -> usize {
     lines
       .iter()
-      .fold(HashMap::new(), |mut m, line| {
-          let ys: Vec<i32> = if line.2 == Some(-1.0) { (line.1.1..=line.0.1).rev().collect() } else { (line.0.1..=line.1.1).collect() };
-          for x in line.0.0..=line.1.0 {
-              for y in &ys {
-                  let p = Point(x, *y);
-                  if line.0 == p || slope(line.0, p) == line.2 {
-                      *m.entry(p).or_insert(0) += 1;
-                  }
-              }
-          }
-          m
-    }).values().filter(|&&x| x > 1).count()
+      .flat_map(|l| {
+          let ys: Vec<i32> = if l.2 == Some(-1.0) { (l.1.1..=l.0.1).rev().collect() } else { (l.0.1..=l.1.1).collect() };
+          (l.0.0..=l.1.0)
+              .cartesian_product(ys)
+              .map(|(x, y)| Point(x, y))
+              .filter(|&p| l.0 == p || slope(l.0, p) == l.2)
+              .collect::<Vec<Point>>()
+      })
+      .fold(HashMap::new(), |mut m, p| { m.entry(p).and_modify(|c| *c += 1).or_insert(1); m })
+      .values().filter(|&&x| x > 1).count()
 }
 
 fn main() {
