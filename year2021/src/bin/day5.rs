@@ -36,7 +36,7 @@ fn part1(lines: &Vec<Line>) -> usize {
     lines
       .iter()
       .filter(|l| l.2 == Some(0.0) || l.2 == None)
-      .flat_map(|l| (l.0.0..=l.1.0).cartesian_product(l.0.1..=l.1.1).map(|(x, y)| Point(x, y)).collect::<Vec<Point>>())
+      .flat_map(|l| (l.0.0..=l.1.0).cartesian_product(l.0.1..=l.1.1).map(|(x, y)| Point(x, y)))
       .fold(HashMap::new(), |mut m, p| { m.entry(p).and_modify(|c| *c += 1).or_insert(1); m })
       .values().filter(|&&x| x > 1).count()
 }
