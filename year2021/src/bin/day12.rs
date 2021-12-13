@@ -46,7 +46,7 @@ fn part2(graph: &Graph) -> usize {
             Some("end") => { path.push(String::from("end")); vec![path] },
             Some(u) => {
                 path.push(String::from(u));
-                if small(&path.last().unwrap()) { *seen.entry(String::from(u)).or_insert(0) += 1; }
+                if small(path.last().unwrap()) { *seen.entry(String::from(u)).or_insert(0) += 1; }
                 g[u].iter()
                     .fold(vec![], |mut acc, v| {
                         let mut next = stack.clone();
