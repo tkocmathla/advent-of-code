@@ -16,7 +16,6 @@ fn parse_input(input: &str) -> Grid {
 
 fn neighbors(grid: &Grid, (x, y): Coord) -> Vec<Coord> {
     let mut xs = vec![];
-    if x > 0 { xs.push((x - 1, y)) }
     if x < grid[0].len() - 1 { xs.push((x + 1, y)) }
     if y > 0 { xs.push((x, y - 1)) }
     if y < grid.len() - 1 { xs.push((x, y + 1)) }
