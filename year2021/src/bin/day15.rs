@@ -1,6 +1,7 @@
-use std::collections::VecDeque;
+use std::cmp::Reverse;
 use std::collections::HashMap;
 use itertools::iproduct;
+use priority_queue::PriorityQueue;
 
 use year2021::io;
 
@@ -22,20 +23,19 @@ fn neighbors(grid: &Grid, (x, y): Coord) -> Vec<Coord> {
     xs
 }
 
-// TODO a simple queue is "fast enough" but should really use a min-heap
 fn part1(grid: &Grid) -> usize {
-    let mut queue = VecDeque::new();
+    let mut pq = PriorityQueue::new();
     let mut dist: HashMap<_, _> = iproduct!(0..grid.len(), 0..grid[0].len()).map(|coord| (coord, usize::MAX)).collect();
 
-    queue.push_back((0, 0));
+    pq.push((0, 0), Reverse(0));
     dist.entry((0, 0)).and_modify(|v| *v = 0);
 
-    while let Some(coord) = queue.pop_front() {
+    while let Some((coord, Reverse(cost))) = pq.pop() {
         for nbr in neighbors(grid, coord) {
-            let cost = dist[&coord] + grid[nbr.1][nbr.0];
-            if cost < dist[&nbr] {
-                queue.push_back(nbr);
-                dist.entry(nbr).and_modify(|v| *v = cost);
+            let next = cost + grid[nbr.1][nbr.0];
+            if next < dist[&nbr] {
+                pq.push(nbr, Reverse(next));
+                dist.entry(nbr).and_modify(|v| *v = next);
             }
         }
     }

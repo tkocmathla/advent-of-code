@@ -10,3 +10,4 @@ default-run = "year2021"
 
 [dependencies]
 itertools = "0.10.0"
+priority-queue = "1.2.1"
