@@ -61,10 +61,7 @@ fn parse_packet(bin: &str) -> Pack {
         (id, 0) => {
             let len = decode(bin, 7, 22);
             let mut pack = Pack{id, ver, len: 22, val: None};
-            while pack.len < 22 + len {
-                let subp = parse_packet(&bin[pack.len..]);
-                pack = pack + subp
-            }
+            while pack.len < 22 + len { pack = pack + parse_packet(&bin[pack.len..]) }
             pack
         },
         (id, 1) => {
