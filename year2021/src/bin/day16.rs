@@ -27,56 +27,51 @@ fn calc(id: usize, acc: Option<usize>, val: usize) -> usize {
         (1, Some(acc)) => acc * val,
         (2, Some(acc)) => acc.min(val),
         (3, Some(acc)) => acc.max(val),
-        //4 =>  literal decode?
         (5, Some(acc)) => if acc > val { 1 } else { 0 },
         (6, Some(acc)) => if acc < val { 1 } else { 0 },
         (7, Some(acc)) => if acc == val { 1 } else { 0 },
-        (_, _) => acc.unwrap()
+        (_, Some(acc)) => acc
     }
 }
 
-fn parse_packet(pack: &str) -> Pack {
-    let ver = decode(pack, 0, 3);
-    match (decode(pack, 3, 6), decode(pack, 6, 7)) {
+fn parse_packet(bin: &str) -> Pack {
+    let ver = decode(bin, 0, 3);
+    match (decode(bin, 3, 6), decode(bin, 6, 7)) {
         (4, _) => {
-            let mut spans = (6..).step_by(5).map(|i| (&pack[i..i+1], &pack[i+1..i+5]));
-            let mut p = spans.take_while_ref(|(b, _)| b == &"1")
-                 .fold(Pack{ver, len: 11, val: 0}, |mut p, (_, v)| {
-                     p.len += 5;
-                     p.val = (p.val << 4) | decode_all(v);
-                     p
-                 });
-            p.val = (p.val << 4) | decode_all(spans.next().unwrap().1);
-            p
+            let mut spans = (6..).step_by(5).map(|i| (&bin[i..i+1], &bin[i+1..i+5]));
+            let mut pack = spans
+                .take_while_ref(|(b, _)| b == &"1")
+                .fold(Pack{ver, len: 11, val: 0}, |p, (_, v)| {
+                    Pack{ver: p.ver, len: p.len + 5, val: (p.val << 4) | decode_all(v)}
+                });
+            pack.val = (pack.val << 4) | decode_all(spans.next().unwrap().1);
+            pack
         },
         (id, 0) => {
-            let len = decode(pack, 7, 22);
+            let len = decode(bin, 7, 22);
             let mut i = 0;
             let mut v = ver;
             let mut acc = None;
             while i < len {
-                let p = parse_packet(&pack[22+i..]);
-                acc = Some(calc(id, acc, p.val));
-                v += p.ver;
-                i += p.len;
+                let pack = parse_packet(&bin[22+i..]);
+                acc = Some(calc(id, acc, pack.val));
+                v += pack.ver;
+                i += pack.len;
             }
             Pack{ver: v, len: 22 + len, val: acc.unwrap()}
         },
         (id, 1) => {
-            let num = decode(pack, 7, 18);
+            let num = decode(bin, 7, 18);
             let mut acc = None;
-            let mut p2 = (0..num).fold(Pack{ver, len: 18, val: 0}, |mut p, _| {
-                let subp = parse_packet(&pack[p.len..]);
+            let mut pack = (0..num).fold(Pack{ver, len: 18, val: 0}, |p, _| {
+                let subp = parse_packet(&bin[p.len..]);
                 acc = Some(calc(id, acc, subp.val));
-                p.ver += subp.ver;
-                p.len += subp.len;
-                p
+                Pack{ver: p.ver + subp.ver, len: p.len + subp.len, val: 0}
             });
-            p2.val = acc.unwrap();
-            p2
-
+            pack.val = acc.unwrap();
+            pack
         },
-        _ => panic!("bad packet: {}", pack)
+        _ => panic!()
     }
 }
 
