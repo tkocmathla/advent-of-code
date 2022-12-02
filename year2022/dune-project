@@ -1,0 +1,26 @@
+(lang dune 3.5)
+
+(name year2022)
+
+(generate_opam_files true)
+
+(source
+ (github username/reponame))
+
+(authors "Matt Grimm")
+
+(maintainers "Matt Grimm")
+
+(license LICENSE)
+
+(documentation https://url/to/documentation)
+
+(package
+ (name year2022)
+ (synopsis "Advent of Code 2022 solutions")
+ (description "Advent of Code 2022 solutions")
+ (depends ocaml dune)
+ (tags
+  (topics "to describe" your project)))
+
+; See the complete stanza docs at https://dune.readthedocs.io/en/stable/dune-files.html#dune-project
