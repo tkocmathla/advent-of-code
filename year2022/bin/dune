@@ -7,3 +7,13 @@
  (public_name day2)
  (name day2)
  (modules day2))
+
+(executable
+ (public_name day3)
+ (name day3)
+ (modules day3))
+
+(executable
+ (public_name day4)
+ (name day4)
+ (modules day4))
