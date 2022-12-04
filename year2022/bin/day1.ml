@@ -5,7 +5,7 @@ let step (sum, sums) line =
 
 let topn n sums =
   List.sort compare sums |> List.rev |> List.to_seq |> Seq.take n
-  |> Seq.fold_left (fun acc x -> acc + x) 0
+  |> Seq.fold_left (+) 0
 
 let solve n seq = Seq.fold_left step (0, []) seq |> fun (_, sums) -> topn n sums
 
