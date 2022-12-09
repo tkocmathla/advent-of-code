@@ -10,9 +10,7 @@ let follow (hx, hy) (tx, ty) =
   if Int.abs xdist <= 1 && Int.abs ydist <= 1 then
     tx, ty
   else
-    let x = tx + (compare xdist 0) in
-    let y = ty + (compare ydist 0) in
-    x, y
+    tx + (compare xdist 0), ty + (compare ydist 0)
 
 let rec update_tail head = function
   | [] -> []
