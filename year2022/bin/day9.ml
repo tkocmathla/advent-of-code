@@ -7,17 +7,12 @@ let unpack_cmds cmds =
 let follow (hx, hy) (tx, ty) =
   let xdist = hx - tx in
   let ydist = hy - ty in
-
-  if Int.abs xdist > 1 then
-    let x = tx + if hx > tx then 1 else -1 in
-    let y = ty + if hy > ty then 1 else if hy < ty then -1 else 0 in
-    x, y
-  else if Int.abs ydist > 1 then
-    let y = ty + if hy > ty then 1 else -1 in
-    let x = tx + if hx > tx then 1 else if hx < tx then -1 else 0 in
-    x, y
-  else
+  if Int.abs xdist <= 1 && Int.abs ydist <= 1 then
     tx, ty
+  else
+    let x = tx + (compare xdist 0) in
+    let y = ty + (compare ydist 0) in
+    x, y
 
 let rec update_tail head = function
   | [] -> []
