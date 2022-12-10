@@ -47,3 +47,9 @@
  (name day9)
  (modules day9)
  (libraries year2022))
+
+(executable
+ (public_name day10)
+ (name day10)
+ (modules day10)
+ (libraries year2022))
