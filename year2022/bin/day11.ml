@@ -1,8 +1,10 @@
+open Year2022.Common
+
 module M = Map.Make(Int)
 
 type monkey_t = { id : int; inspect: int -> int; target: int -> int; }
 
-let parse_monkey seq m =
+let parse_monkey f seq m =
   let lines = Array.of_seq seq in
 
   let id = Scanf.sscanf lines.(0) "Monkey %d:" (fun d -> d) in
@@ -13,40 +15,50 @@ let parse_monkey seq m =
   let id_false = Scanf.sscanf lines.(5) "    If false: throw to monkey %d" Fun.id in
 
   let inspect = match op with
-    | '*' -> (fun value -> (value * (if operand = "old" then value else int_of_string operand)) / 3)
-    | '+' -> (fun value -> (value + (if operand = "old" then value else int_of_string operand)) / 3)
+    | '*' -> (fun value -> f (value * (if operand = "old" then value else int_of_string operand)))
+    | '+' -> (fun value -> f (value + (if operand = "old" then value else int_of_string operand)))
     | _ -> failwith "bad op"
   in
   let target_fun = (fun value -> if value mod div = 0 then id_true else id_false) in
-
   {id = id; inspect = inspect; target = target_fun}, M.add id (0, items) m
 
-let parse_monkeys (seq, monkeys, m) =
+let parse_monkeys f (seq, monkeys, m) =
   let head = Seq.take 6 seq in
   let tail = Seq.drop 7 seq in
-  let (monkey, m) = parse_monkey head m in
+  let (monkey, m) = parse_monkey f head m in
   tail, monkey :: monkeys, m
 
 let update m monkey =
   let (_, items) = M.find monkey.id m in
   List.fold_left (fun m item ->
-    let x = monkey.inspect item in
-    M.update (monkey.target x) (function None -> Some (0, [x]) | Some (n, l) -> Some (n, (x :: l))) m
-    |> M.update monkey.id (function None -> Some (0, []) | Some (n, l) -> Some (n + 1, (List.filter (fun x' -> x' <> item) l))))
+    let (n', items') = M.find monkey.id m in
+    let worry = monkey.inspect item in
+    M.update (monkey.target worry) (function None -> Some (0, [worry]) | Some (n, l) -> Some (n, worry :: l)) m
+    |> M.add monkey.id (n' + 1, (List.filter (( <> ) item) items')))
   m items
 
 let round (monkeys, m) =
   Seq.drop 8 monkeys, Seq.fold_left update m (Seq.take 8 monkeys)
 
-let part1 seq =
-  let (_, monkeys, m) = Seq.iterate parse_monkeys (seq, [], M.empty) |> Seq.drop 8 |> Seq.uncons |> function None -> failwith "" | Some (x, _) -> x in
+let score m =
+  let counts = M.to_seq m |> Seq.map (fun (_, (n, _)) -> n) |> List.of_seq |> List.sort rcompare in
+  match counts with
+  | a :: b :: _ -> a * b
+  | _ -> 0
+
+let solve f n seq =
+  let (_, monkeys, m) =
+    Seq.iterate (parse_monkeys f) (seq, [], M.empty)
+    |> Seq.drop 8 |> Seq.uncons |> function None -> failwith "derp" | Some (x, _) -> x in
+
   Seq.iterate round (Seq.cycle (List.to_seq (List.rev monkeys)), m)
-  |> Seq.drop 20
+  |> Seq.drop n
   |> Seq.uncons
-  |> function None -> () | Some ((_, m), _) -> M.to_seq m |> Seq.map (fun (_, (n, _)) -> n) |> List.of_seq |> List.sort compare |> List.rev |> List.to_seq |> Seq.take 2 |> Seq.fold_left ( * ) 1 |> string_of_int |> print_endline
+  |> function None -> 0 | Some ((_, m), _) -> score m
 
 let () =
   print_endline "";
   let seq = Arg.read_arg "data/day11.txt" |> Array.to_seq in
 
-  part1 seq
+  solve (fun x -> x / 3) 20 seq |> string_of_int |> print_endline; (* 50830 *)
+  solve (fun x -> x mod 9699690) 10000 seq |> string_of_int |> print_endline (* 14399640002 *)
