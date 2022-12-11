@@ -9,8 +9,7 @@ let rec parse_cmds = function
 
 let draw reg cycle crt =
   let cyc = cycle mod 40 in
-  let mid = reg + 1 in
-  let ch = if cyc >= mid - 1 && cyc <= mid + 1 then '#' else '.' in
+  let ch = if cyc >= reg && cyc <= reg + 2 then '#' else '.' in
   ch :: crt
 
 let exe (reg, cycle, cmds, crt) =
