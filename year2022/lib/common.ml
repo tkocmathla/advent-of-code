@@ -5,7 +5,6 @@ module PointSet = Set.Make (struct
 end)
 
 let rcompare a b = compare b a
-
 let int_from_char ch = int_of_char ch - int_of_char '0'
 
 let range_from start stop =
