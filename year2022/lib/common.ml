@@ -4,6 +4,12 @@ module PointSet = Set.Make (struct
   let compare = compare
 end)
 
+module PointMap = Map.Make (struct
+  type t = int * int
+
+  let compare = compare
+end)
+
 let rcompare a b = compare b a
 let int_from_char ch = int_of_char ch - int_of_char '0'
 
