@@ -1,20 +1,15 @@
 open Year2022.Common
 
 let windows l =
-  let rec step l acc =
-    match l with
-    | a :: b :: t -> step (b :: t) ((a, b) :: acc)
+  let rec step acc = function
+    | a :: b :: t -> step ((a, b) :: acc) (b :: t)
     | _ -> acc
-  in
-  step l [] |> List.rev
+  in step [] l |> List.rev
 
-let split_rocks strs =
-  let str_to_segs all_segs line =
-    let to_point = (fun pair -> Scanf.sscanf pair "%d,%d" (fun x y -> (x, y))) in
-    let segs = Str.split (Str.regexp " -> ") line |> List.map to_point in
-    segs :: all_segs
-  in
-  List.fold_left str_to_segs [] strs
+let parse_rocks strs =
+  let to_point = (fun s -> Scanf.sscanf s "%d,%d" (fun x y -> (x, y))) in
+  let to_segs acc line = (List.map to_point (Str.split (Str.regexp " -> ") line)) :: acc in
+  List.fold_left to_segs [] strs
 
 let add_rock_line grid ((x1, y1), (x2, y2)) =
   if x1 <> x2 then
@@ -60,6 +55,6 @@ let part2 max_y rocks =
 
 let () =
   (* max y = 169, max x = 521 *)
-  let rocks = Arg.read_arg "data/day14.txt" |> Array.to_list |> split_rocks in
+  let rocks = Arg.read_arg "data/day14.txt" |> Array.to_list |> parse_rocks in
   part1 170 rocks |> string_of_int |> print_endline; (* 843 *)
   part2 171 rocks |> string_of_int |> print_endline; (* 27625 *)
