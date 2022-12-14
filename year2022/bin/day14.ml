@@ -16,14 +16,14 @@ let split_rocks strs =
   in
   List.fold_left str_to_segs [] strs
 
-let update_grid grid ((x1, y1), (x2, y2)) =
+let add_rock_line grid ((x1, y1), (x2, y2)) =
   if x1 <> x2 then
     List.fold_left (fun g x -> g.(y1).(x) <- '#'; g) grid (range_from (Int.min x1 x2) ((Int.max x1 x2) + 1))
   else
     List.fold_left (fun g y -> g.(y).(x1) <- '#'; g) grid (range_from (Int.min y1 y2) ((Int.max y1 y2) + 1))
 
-let populate_grid grid rocks =
-  List.fold_left (fun g pts -> List.fold_left update_grid g (windows pts)) grid rocks
+let add_rocks grid rocks =
+  List.fold_left (fun g pts -> List.fold_left add_rock_line g (windows pts)) grid rocks
 
 let step_sand max_y ((x, y), _, grid) =
   if y + 1 = max_y then begin
@@ -47,13 +47,13 @@ let drop_sand max_y (pos, grid) =
   |> Seq.uncons |> function None -> (pos, grid) | Some ((p, _, g), _) -> (p, g)
 
 let part1 max_y rocks =
-  let grid = populate_grid (Array.make_matrix max_y 700 '.') rocks in
+  let grid = add_rocks (Array.make_matrix max_y 700 '.') rocks in
   Seq.iterate (drop_sand max_y) ((0, 0), grid)
   |> Seq.take_while (fun ((_, y), _) -> y <> (pred max_y))
   |> List.of_seq |> List.length |> pred
 
 let part2 max_y rocks =
-  let grid = populate_grid (Array.make_matrix max_y 700 '.') rocks in
+  let grid = add_rocks (Array.make_matrix max_y 700 '.') rocks in
   Seq.iterate (drop_sand max_y) ((0, 0), grid)
   |> Seq.take_while (fun (pos, _) -> pos <> (500, 0))
   |> List.of_seq |> List.length
