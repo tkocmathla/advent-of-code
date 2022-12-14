@@ -7,7 +7,7 @@ let windows l =
   in step [] l |> List.rev
 
 let parse_rocks strs =
-  let to_point = (fun s -> Scanf.sscanf s "%d,%d" (fun x y -> (x, y))) in
+  let to_point s = Scanf.sscanf s "%d,%d" (fun x y -> (x, y)) in
   let to_segs acc line = (List.map to_point (Str.split (Str.regexp " -> ") line)) :: acc in
   List.fold_left to_segs [] strs
 
