@@ -1,4 +1,9 @@
 (executable
+ (public_name dev)
+ (name dev)
+ (modules dev))
+
+(executable
  (public_name day1)
  (name day1)
  (modules day1))
@@ -65,3 +70,22 @@
  (name day12)
  (modules day12)
  (libraries year2022))
+
+(executable
+ (public_name day13)
+ (name day13)
+ (modules day13)
+ (libraries str year2022))
+
+(executable
+ (public_name day14)
+ (name day14)
+ (modules day14)
+ (libraries str year2022))
+
+(executable
+ (public_name day15)
+ (name day15)
+ (modes byte)
+ (modules day15)
+ (libraries str year2022))
