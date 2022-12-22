@@ -1,14 +1,6 @@
-module PointSet = Set.Make (struct
-  type t = int * int
-
-  let compare = compare
-end)
-
-module PointMap = Map.Make (struct
-  type t = int * int
-
-  let compare = compare
-end)
+module PointSet = Set.Make (struct type t = int * int let compare = compare end)
+module Point3dSet = Set.Make (struct type t = int * int * int let compare = compare end)
+module PointMap = Map.Make (struct type t = int * int let compare = compare end)
 
 (* Converts the number represented by ch into an integer *)
 let int_from_char ch = int_of_char ch - int_of_char '0'

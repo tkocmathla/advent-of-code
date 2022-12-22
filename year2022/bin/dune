@@ -89,3 +89,42 @@
  (modes byte)
  (modules day15)
  (libraries str year2022))
+
+(executable
+ (public_name day16)
+ (name day16)
+ (modes byte)
+ (modules day16)
+ (libraries str year2022))
+
+(executable
+ (public_name day17)
+ (name day17)
+ (modules day17)
+ (libraries str year2022))
+
+(executable
+ (public_name day18)
+ (name day18)
+ (modules day18)
+ (libraries str year2022))
+
+;(executable
+; (public_name day19)
+; (name day19)
+; (modules day19)
+; (libraries str year2022))
+
+(executable
+ (public_name day20)
+ (name day20)
+ (modules day20)
+ (libraries str year2022))
+
+(executable
+ (public_name day21)
+ (name day21)
+ (modules day21)
+ (flags -rectypes)
+ (modes byte)
+ (libraries str year2022))
