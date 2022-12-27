@@ -128,3 +128,9 @@
  (name day23)
  (modules day23)
  (libraries str year2022))
+
+(executable
+ (public_name day25)
+ (name day25)
+ (modules day25)
+ (libraries str year2022))
