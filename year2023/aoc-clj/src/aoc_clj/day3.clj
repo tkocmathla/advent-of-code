@@ -25,10 +25,10 @@
   (->> (map-indexed
          (fn [i row]
            (reduce
-             (fn [[j m] group]
-               (let [next-j (+ j (count group))]
-                 (if (some num? group)
-                   (let [num (str-int (apply str group))]
+             (fn [[j m] digits]
+               (let [next-j (+ j (count digits))]
+                 (if (some num? digits)
+                   (let [num (str-int (apply str digits))]
                      [next-j (reduce (fn [m' j'] (assoc m' [i j'] num)) m (range j next-j))])
                    [next-j m])))
              [0 {}]
@@ -37,14 +37,13 @@
        (map second)
        (into {})))
 
-(defn unique-nums [lut nums]
-  (->> (filter identity (sort nums))
-       (reduce (fn [[prev v] [y x]]
+(defn unique-nums [lut coords]
+  (->> (filter identity (sort coords))
+       (reduce (fn [[[py px] v] [y x]]
                  [[y x]
                   (cond-> v
-                    (or (nil? prev) (not= (prev 0) y) (> (- x (prev 1)) 1))
-                    (conj (lut [y x]))
-                    )])
+                    (or (nil? py) (not= py y) (> (- x px) 1))
+                    (conj (lut [y x])))])
                [nil []])
        second))
 
