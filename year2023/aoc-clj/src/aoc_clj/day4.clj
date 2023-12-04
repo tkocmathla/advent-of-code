@@ -3,7 +3,8 @@
    [clojure.java.io :as io]
    [clojure.set :as set]
    [clojure.string :as string]
-   [aoc-clj.util :refer [str-int]]))
+   [aoc-clj.util :refer [str-int]]
+   [taoensso.tufte :refer [p profile] :as tufte]))
 
 (defonce test-input (->> "day4_test.txt" io/resource slurp))
 (defonce input (->> "day4.txt" io/resource slurp))
@@ -35,7 +36,12 @@
          [0 []])
        first))
 
+
 (comment
+  ; ~2 ms each
+  (tufte/add-basic-println-handler! {})
+  (profile {} (dotimes [_ 100] (p :p1 (p1 input)) (p :p2 (p2 input))))
+
   (= 13 (p1 test-input))
   (= 17803 (p1 input))
 
