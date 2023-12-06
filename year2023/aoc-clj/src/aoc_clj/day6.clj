@@ -22,9 +22,7 @@
        (filter #(> % max-dist))))
 
 (defn p1 [s]
-  (->> (map run-race (parse s))
-       (map count)
-       (reduce *)))
+  (->> (map run-race (parse s)) (map count) (reduce *)))
 
 (defn p2 [race-time max-dist]
   (count (run-race [race-time max-dist])))
