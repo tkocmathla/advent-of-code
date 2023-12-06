@@ -1,3 +1,3 @@
 (ns aoc-clj.util)
 
-(def str-int #(Integer/parseInt %))
+(def str-int #(Long/parseLong %))
