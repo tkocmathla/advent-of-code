@@ -19,8 +19,8 @@
       "AAAAA"
       (string/replace cards #"J" (best-card cards')))))
 
-(defn to-hand [upgrade-j? s]
-  (let [freq (vals (frequencies (cond-> s upgrade-j? upgrade-j)))
+(defn to-hand [wild-j? s]
+  (let [freq (vals (frequencies (cond-> s wild-j? upgrade-j)))
         pairs #(count (filter #{2} %))]
     (cond
       (= 1 (count freq)) :five-of-kind
@@ -31,17 +31,17 @@
       (and (= 1 (pairs freq)) (= 3 (count (filter #{1} freq)))) :one-pair
       (= 5 (count freq)) :high-card)))
 
-(defn parse-hand [upgrade-j? s]
+(defn parse-hand [wild-j? s]
   (let [[hand bid] (string/split s #" ")]
-    [hand (to-hand upgrade-j? hand) (str-int bid)]))
+    [hand (to-hand wild-j? hand) (str-int bid)]))
 
-(defn sort-hands [upgrade-j? [s hand _]]
-  (let [card-cardinality' (cond-> card-cardinality upgrade-j? (assoc \J Integer/MAX_VALUE))]
+(defn sort-hands [wild-j? [s hand _]]
+  (let [card-cardinality' (cond-> card-cardinality wild-j? (assoc \J Integer/MAX_VALUE))]
     (vec (cons (hand-cardinality hand) (mapv card-cardinality' s)))))
 
-(defn solve [upgrade-j? s]
-  (let [hands (map (partial parse-hand upgrade-j?) (string/split-lines s))]
-    (->> (sort-by (partial sort-hands upgrade-j?) hands)
+(defn solve [wild-j? s]
+  (let [hands (map (partial parse-hand wild-j?) (string/split-lines s))]
+    (->> (sort-by (partial sort-hands wild-j?) hands)
          reverse
          (reduce (fn [[i sum] [_ _ bid]] [(inc i) (+ sum (* i bid))]) [1 0])
          second)))
