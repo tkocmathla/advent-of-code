@@ -35,13 +35,13 @@
   (let [[hand bid] (string/split s #" ")]
     [hand (to-hand wild-j? hand) (str-int bid)]))
 
-(defn sort-hands [wild-j? [s hand _]]
+(defn sort-hand [wild-j? [s hand _]]
   (let [card-cardinality' (cond-> card-cardinality wild-j? (assoc \J Integer/MAX_VALUE))]
     (vec (cons (hand-cardinality hand) (mapv card-cardinality' s)))))
 
 (defn solve [wild-j? s]
   (let [hands (map (partial parse-hand wild-j?) (string/split-lines s))]
-    (->> (sort-by (partial sort-hands wild-j?) hands)
+    (->> (sort-by (partial sort-hand wild-j?) hands)
          reverse
          (reduce (fn [[i sum] [_ _ bid]] [(inc i) (+ sum (* i bid))]) [1 0])
          second)))
