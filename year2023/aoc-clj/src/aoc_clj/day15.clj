@@ -7,45 +7,33 @@
 (defonce test-input (->> "day15_test.txt" io/resource slurp))
 (defonce input (->> "day15.txt" io/resource slurp))
 
+; ------------------------------------------------------------------------------
+
 (defn parse [s] (string/split (string/trimr s) #","))
-(defn hash-char [hash ch] (mod (* 17 (+ hash (int ch))) 256))
-(defn hash-str [s] (reduce hash-char 0 s))
 
-(defn box-index [box label] (first (keep-indexed (fn [i [s _]] (when (= s label) i)) box)))
+(defn hash-str [s] (reduce (fn [x ch] (mod (* 17 (+ x (int ch))) 256)) 0 s))
 
-(defn remove-label [label box]
-  (let [i (box-index box label)]
+(defn slot [box label] (first (keep-indexed (fn [i [s _]] (when (= s label) i)) box)))
+
+(defn update-box [label len box]
+  (let [i (slot box label), lens (cond-> [] len (conj [label len]))]
     (if i
-      (into [] (concat (subvec box 0 i) (subvec box (inc i))))
-      box)))
-
-(defn merge-label [label len box]
-  (let [i (box-index box label)]
-    (if i
-      (into [] (concat (subvec box 0 i) [[label len]] (subvec box (inc i))))
-      (conj box [label len]))))
-
-(defn score-box [box-num slot-num [_ len]]
-  (* (inc box-num) (inc slot-num) len))
+      (into [] (concat (subvec box 0 i) lens (subvec box (inc i))))
+      (cond-> box len (into lens)))))
 
 (defn step [boxes s]
-  (let [[_ label op len] (re-find #"(\w+)([-=])(\d+)?" s)
-        box-num (hash-str label)]
-    (case op
-      "-" (update boxes box-num (partial remove-label label))
-      "=" (update boxes box-num (partial merge-label label (str-int len))))))
+  (let [[_ label len] (re-find #"(\w+)[-=](\d+)?" s)]
+    (update boxes (hash-str label) (partial update-box label (when len (str-int len))))))
+
+(defn score-box [box-num slot-num [_ len]] (* (inc box-num) (inc slot-num) len))
 
 (defn score-boxes [boxes]
-  (->> (map-indexed (fn [box-num box] (map-indexed (partial score-box box-num) box)) boxes)
-       flatten
-       (reduce +)))
+  (reduce + (flatten (map-indexed (fn [i box] (map-indexed (partial score-box i) box)) boxes))))
 
 (defn p1 [s] (reduce + (map hash-str (parse s))))
+(defn p2 [s] (score-boxes (reduce step (vec (repeat 256 [])) (parse s))))
 
-(defn p2 [s]
-  (->> (parse s)
-       (reduce step (vec (repeat 256 [])))
-       score-boxes))
+; ------------------------------------------------------------------------------
 
 (comment
   (= 1320 (p1 test-input))
