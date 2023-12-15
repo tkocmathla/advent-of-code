@@ -8,14 +8,10 @@
 (defonce input (->> "day15.txt" io/resource slurp))
 
 (defn parse [s] (string/split (string/trimr s) #","))
+(defn hash-char [hash ch] (mod (* 17 (+ hash (int ch))) 256))
+(defn hash-str [s] (reduce hash-char 0 s))
 
-(defn hash-char- [hash ch] (mod (* 17 (+ hash (int ch))) 256))
-(def hash-char (memoize hash-char-))
-(defn hash-str- [s] (reduce hash-char 0 s))
-(def hash-str (memoize hash-str-))
-
-(defn box-index [box label]
-  (first (keep-indexed (fn [i [s _]] (when (= s label) i)) box)))
+(defn box-index [box label] (first (keep-indexed (fn [i [s _]] (when (= s label) i)) box)))
 
 (defn remove-label [label box]
   (let [i (box-index box label)]
@@ -32,17 +28,17 @@
 (defn score-box [box-num slot-num [_ len]]
   (* (inc box-num) (inc slot-num) len))
 
-(defn score-boxes [boxes]
-  (->> (map-indexed (fn [box-num box] (map-indexed (partial score-box box-num) box)) boxes)
-       flatten
-       (reduce +)))
-
 (defn step [boxes s]
   (let [[_ label op len] (re-find #"(\w+)([-=])(\d+)?" s)
         box-num (hash-str label)]
     (case op
       "-" (update boxes box-num (partial remove-label label))
       "=" (update boxes box-num (partial merge-label label (str-int len))))))
+
+(defn score-boxes [boxes]
+  (->> (map-indexed (fn [box-num box] (map-indexed (partial score-box box-num) box)) boxes)
+       flatten
+       (reduce +)))
 
 (defn p1 [s] (reduce + (map hash-str (parse s))))
 
