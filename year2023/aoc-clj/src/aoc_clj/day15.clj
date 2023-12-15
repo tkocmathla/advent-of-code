@@ -23,12 +23,11 @@
 
 (defn step [boxes s]
   (let [[_ label len] (re-find #"(\w+)[-=](\d+)?" s)]
-    (update boxes (hash-str label) (partial update-box label (when len (str-int len))))))
-
-(defn score-box [box-num slot-num [_ len]] (* (inc box-num) (inc slot-num) len))
+    (update boxes (hash-str label) #(update-box label (when len (str-int len)) %))))
 
 (defn score-boxes [boxes]
-  (reduce + (flatten (map-indexed (fn [i box] (map-indexed (partial score-box i) box)) boxes))))
+  (let [f (fn [i j [_ len]] (* (inc i) (inc j) len))]
+    (reduce + (flatten (map-indexed (fn [i box] (map-indexed (partial f i) box)) boxes)))))
 
 (defn p1 [s] (reduce + (map hash-str (parse s))))
 (defn p2 [s] (score-boxes (reduce step (vec (repeat 256 [])) (parse s))))
