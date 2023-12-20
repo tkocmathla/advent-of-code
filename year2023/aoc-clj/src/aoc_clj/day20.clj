@@ -10,6 +10,9 @@
 (defonce input (->> "day20.txt" io/resource slurp))
 
 ; ------------------------------------------------------------------------------
+; * graph is a map from name -> map of kind, kids, and state
+; * pulse is represented as true=high, false=low, nil=none
+; * state is a boolean for flip-flops, and a map for conjunctions
 
 (defn parse-line [line]
   (let [[l r] (string/split line #" -> ")
@@ -28,7 +31,7 @@
 
 (defn propagate [from kind pulse state]
   (case kind
-    \% (when (not pulse) (not (or state pulse)))
+    \% (when (false? pulse) (not (or state pulse)))
     \& (not (every? true? (vals (assoc state from pulse))))
     pulse))
 
