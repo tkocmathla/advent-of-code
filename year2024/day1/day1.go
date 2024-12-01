@@ -2,7 +2,6 @@ package day1
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"sort"
 	"strconv"
@@ -56,6 +55,6 @@ func part2(input string) int {
 }
 
 func Solve() {
-	fmt.Println(part1("data/day1.txt")) // 1320851
-	fmt.Println(part2("data/day1.txt")) // 26859182
+	aoc.TimeFunc(part1, "data/day1.txt") // 1320851
+	aoc.TimeFunc(part2, "data/day1.txt") // 26859182
 }
