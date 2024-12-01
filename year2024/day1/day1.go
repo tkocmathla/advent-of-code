@@ -11,7 +11,6 @@ import (
 
 func part1(input string) int {
 	file := aoc.Try(os.Open(input))
-	defer file.Close()
 
 	var l, r []int
 	scanner := bufio.NewScanner(file)
@@ -32,7 +31,6 @@ func part1(input string) int {
 
 func part2(input string) int {
 	file := aoc.Try(os.Open(input))
-	defer file.Close()
 
 	var l []int
 	r := make(map[int]int)
