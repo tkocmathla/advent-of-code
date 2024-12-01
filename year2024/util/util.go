@@ -30,9 +30,9 @@ type DayPartFunc[T any] func(string) T
 
 // TimeFunc runs the given function and prints the result formatted with the function name, result, and elapsed time.
 func TimeFunc[T any](f DayPartFunc[T], arg string) {
-	rfn := runtime.FuncForPC(reflect.ValueOf(f).Pointer())
+	name := runtime.FuncForPC(reflect.ValueOf(f).Pointer()).Name()
 	now := time.Now()
 	ans := f(arg)
 	elapsed := time.Since(now)
-	fmt.Printf("%s: %v (%s)\n", rfn.Name(), ans, elapsed)
+	fmt.Printf("%s: %v (%s)\n", name, ans, elapsed)
 }
