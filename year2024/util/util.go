@@ -2,10 +2,10 @@ package util
 
 import (
 	"fmt"
+	"golang.org/x/exp/constraints"
 	"reflect"
 	"runtime"
 	"time"
-	"golang.org/x/exp/constraints"
 )
 
 // Abs returns |a - b| for integer types.
@@ -13,7 +13,7 @@ func Abs[T constraints.Integer](a, b T) T {
 	if a < b {
 		return b - a
 	} else {
-		return  a - b
+		return a - b
 	}
 }
 
