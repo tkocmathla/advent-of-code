@@ -1,12 +1,12 @@
 package day1
 
 import (
+	aoc "aoc/util"
 	"bufio"
 	"os"
 	"sort"
 	"strconv"
 	s "strings"
-	aoc "aoc/util"
 )
 
 func part1(input string) int {
