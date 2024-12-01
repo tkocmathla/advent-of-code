@@ -26,11 +26,7 @@ func part1(input string) int {
 	sum := 0
 	for i, x := range l {
 		y := r[i]
-		if x < y {
-			sum += y - x
-		} else {
-			sum += x - y
-		}
+		sum += aoc.Abs(x, y)
 	}
 	return sum
 }

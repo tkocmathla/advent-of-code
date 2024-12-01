@@ -5,7 +5,17 @@ import (
 	"reflect"
 	"runtime"
 	"time"
+	"golang.org/x/exp/constraints"
 )
+
+// Abs returns |a - b| for integer types.
+func Abs[T constraints.Integer](a, b T) T {
+	if a < b {
+		return b - a
+	} else {
+		return  a - b
+	}
+}
 
 // Try is a simple wrapper for functions that return a single value and an error result.
 func Try[T any](value T, e error) T {
