@@ -16,30 +16,16 @@ func strToInt(strs []string) []int {
 	return ints
 }
 
-func allInc(xs []int) bool {
-	last := xs[0]
-	for _, x := range xs[1:] {
-		if x < last {
-			return false
-		}
-		last = x
-	}
-	return true
-}
-
-func allDec(xs []int) bool {
-	last := xs[0]
-	for _, x := range xs[1:] {
-		if x > last {
-			return false
-		}
-		last = x
-	}
-	return true
-}
-
 func monotonic(xs []int) bool {
-	return allInc(xs) || allDec(xs)
+	inc := true
+	dec := true
+	last := xs[0]
+	for _, x := range xs[1:] {
+		inc = inc && x > last
+		dec = dec && x < last
+		last = x
+	}
+	return inc || dec
 }
 
 func gradual(xs []int) bool {
@@ -53,20 +39,6 @@ func gradual(xs []int) bool {
 
 	}
 	return true
-}
-
-func part1(input string) int {
-	file := aoc.Try(os.Open(input))
-
-	sum := 0
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		levels := strToInt(s.Fields(scanner.Text()))
-		if monotonic(levels) && gradual(levels) {
-			sum += 1
-		}
-	}
-	return sum
 }
 
 func safeWithReplacement(xs []int) bool {
@@ -83,18 +55,26 @@ func safeWithReplacement(xs []int) bool {
 	return false
 }
 
-func part2(input string) int {
+func solve(input string, pred func([]int) bool) int {
 	file := aoc.Try(os.Open(input))
 
 	sum := 0
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		levels := strToInt(s.Fields(scanner.Text()))
-		if safeWithReplacement(levels) {
+		if pred(levels) {
 			sum += 1
 		}
 	}
 	return sum
+}
+
+func part1(input string) int {
+	return solve(input, func(xs []int) bool { return monotonic(xs) && gradual(xs) })
+}
+
+func part2(input string) int {
+	return solve(input, safeWithReplacement)
 }
 
 func Solve() {
