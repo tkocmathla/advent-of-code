@@ -2,6 +2,7 @@ package main
 
 import (
 	"aoc/day1"
+	"aoc/day2"
 	aoc "aoc/util"
 	"fmt"
 	"os"
@@ -17,6 +18,8 @@ func main() {
 	switch aoc.Try(strconv.Atoi(os.Args[1])) {
 	case 1:
 		day1.Solve()
+	case 2:
+		day2.Solve()
 	default:
 		fmt.Println("no solution for day", os.Args[1])
 	}
