@@ -19,24 +19,19 @@ func strToInt(strs []string) []int {
 func monotonic(xs []int) bool {
 	inc := true
 	dec := true
-	last := xs[0]
-	for _, x := range xs[1:] {
-		inc = inc && x > last
-		dec = dec && x < last
-		last = x
+	for i, x := range xs[1:] {
+		inc = inc && x > xs[i]
+		dec = dec && x < xs[i]
 	}
 	return inc || dec
 }
 
 func gradual(xs []int) bool {
-	last := xs[0]
-	for _, x := range xs[1:] {
-		diff := aoc.Abs(x, last)
+	for i, x := range xs[1:] {
+		diff := aoc.Abs(x, xs[i])
 		if diff < 1 || diff > 3 {
 			return false
 		}
-		last = x
-
 	}
 	return true
 }
