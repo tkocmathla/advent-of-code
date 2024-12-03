@@ -36,6 +36,6 @@ func part2(input string) int {
 }
 
 func Solve() {
-	aoc.TimeFunc(part1, "data/day3.txt") // 189527826
-	aoc.TimeFunc(part2, "data/day3.txt") // 63013756
+	aoc.AssertEq(aoc.TimeFunc(part1, "data/day3.txt"), 189527826)
+	aoc.AssertEq(aoc.TimeFunc(part2, "data/day3.txt"), 63013756)
 }
