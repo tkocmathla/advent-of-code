@@ -3,6 +3,7 @@ package main
 import (
 	"aoc/day1"
 	"aoc/day2"
+	"aoc/day3"
 	aoc "aoc/util"
 	"fmt"
 	"os"
@@ -20,6 +21,8 @@ func main() {
 		day1.Solve()
 	case 2:
 		day2.Solve()
+	case 3:
+		day3.Solve()
 	default:
 		fmt.Println("no solution for day", os.Args[1])
 	}
