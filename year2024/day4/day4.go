@@ -6,15 +6,14 @@ import (
 	s "strings"
 )
 
-var xmas = [4]byte{'X', 'M', 'A', 'S'}
-
 func is_xmas(grid []string, loc aoc.Point, dir aoc.Point) bool {
 	ok := true
+	var xmas = "XMAS"
 	for i := 0; i < 4 && ok; i++ {
 		y := loc.Y + (dir.Y * i)
 		x := loc.X + (dir.X * i)
 		in_bounds := y >= 0 && x >= 0 && y < len(grid) && x < len(grid[y])
-		ok = ok && in_bounds && grid[loc.Y+(dir.Y*i)][loc.X+(dir.X*i)] == xmas[i]
+		ok = ok && in_bounds && grid[y][x] == xmas[i]
 	}
 	return ok
 }
