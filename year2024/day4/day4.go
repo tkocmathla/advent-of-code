@@ -6,11 +6,6 @@ import (
 	s "strings"
 )
 
-type point struct {
-	x int // column
-	y int // row
-}
-
 func to_grid(data string) [][]byte {
 	var grid [][]byte
 	for i, line := range s.Split(data, "\n") {
@@ -27,29 +22,27 @@ func to_grid(data string) [][]byte {
 
 var xmas = [4]byte{'X', 'M', 'A', 'S'}
 
-func is_xmas(grid [][]byte, loc point, dir point) bool {
+func is_xmas(grid [][]byte, loc aoc.Point, dir aoc.Point) bool {
 	ok := true
 	for i := 0; i < 4 && ok; i++ {
-		y := loc.y + (dir.y * i)
-		x := loc.x + (dir.x * i)
+		y := loc.Y + (dir.Y * i)
+		x := loc.X + (dir.X * i)
 		in_bounds := y >= 0 && x >= 0 && y < len(grid) && x < len(grid[y])
-		ok = ok && in_bounds && grid[loc.y+(dir.y*i)][loc.x+(dir.x*i)] == xmas[i]
+		ok = ok && in_bounds && grid[loc.Y+(dir.Y*i)][loc.X+(dir.X*i)] == xmas[i]
 	}
 	return ok
 }
 
-func is_x_mas(grid [][]byte, loc point) bool {
-	in_bounds := loc.y > 0 && loc.x > 0 && loc.y < len(grid)-1 && loc.x < len(grid[loc.y])-1
+func is_x_mas(grid [][]byte, loc aoc.Point) bool {
+	in_bounds := loc.Y > 0 && loc.X > 0 && loc.Y < len(grid)-1 && loc.X < len(grid[loc.Y])-1
 	if !in_bounds {
 		return false
 	}
-	has_a := grid[loc.y][loc.x] == 'A'
-	has_mas1 := (grid[loc.y-1][loc.x-1] == 'M' && grid[loc.y+1][loc.x+1] == 'S') || (grid[loc.y-1][loc.x-1] == 'S' && grid[loc.y+1][loc.x+1] == 'M')
-	has_mas2 := (grid[loc.y-1][loc.x+1] == 'M' && grid[loc.y+1][loc.x-1] == 'S') || (grid[loc.y-1][loc.x+1] == 'S' && grid[loc.y+1][loc.x-1] == 'M')
+	has_a := grid[loc.Y][loc.X] == 'A'
+	has_mas1 := (grid[loc.Y-1][loc.X-1] == 'M' && grid[loc.Y+1][loc.X+1] == 'S') || (grid[loc.Y-1][loc.X-1] == 'S' && grid[loc.Y+1][loc.X+1] == 'M')
+	has_mas2 := (grid[loc.Y-1][loc.X+1] == 'M' && grid[loc.Y+1][loc.X-1] == 'S') || (grid[loc.Y-1][loc.X+1] == 'S' && grid[loc.Y+1][loc.X-1] == 'M')
 	return has_a && has_mas1 && has_mas2
 }
-
-var dirs = [8]point{{-1, -1}, {-1, 0}, {-1, 1}, {0, 1}, {1, 1}, {1, 0}, {1, -1}, {0, -1}}
 
 func part1(input string) int {
 	data := string(aoc.Try(os.ReadFile(input)))
@@ -57,8 +50,8 @@ func part1(input string) int {
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
-			for _, dir := range dirs {
-				if is_xmas(grid, point{x, y}, dir) {
+			for _, dir := range aoc.Dirs {
+				if is_xmas(grid, aoc.Point{X: x, Y: y}, dir) {
 					xmas += 1
 				}
 			}
@@ -73,7 +66,7 @@ func part2(input string) int {
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
-			if is_x_mas(grid, point{x, y}) {
+			if is_x_mas(grid, aoc.Point{X: x, Y: y}) {
 				xmas += 1
 			}
 		}

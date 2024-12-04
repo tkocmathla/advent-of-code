@@ -8,6 +8,22 @@ import (
 	"time"
 )
 
+type Point struct {
+	X int // column
+	Y int // row
+}
+
+var Dirs = [8]Point{
+	{X: -1, Y: -1},
+	{X: -1, Y: 0},
+	{X: -1, Y: 1},
+	{X: 0, Y: 1},
+	{X: 1, Y: 1},
+	{X: 1, Y: 0},
+	{X: 1, Y: -1},
+	{X: 0, Y: -1},
+}
+
 // Abs returns |a - b| for integer types.
 func Abs[T constraints.Integer](a, b T) T {
 	if a < b {
