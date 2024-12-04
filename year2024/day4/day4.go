@@ -8,10 +8,7 @@ import (
 
 func to_grid(data string) [][]byte {
 	var grid [][]byte
-	for i, line := range s.Split(data, "\n") {
-		if len(line) == 0 {
-			break
-		}
+	for i, line := range s.Fields(data) {
 		grid = append(grid, []byte{})
 		for j := range line {
 			grid[i] = append(grid[i], line[j])
