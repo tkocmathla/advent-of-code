@@ -28,8 +28,7 @@ func is_x_mas(grid []string, loc aoc.Point) bool {
 }
 
 func part1(input string) int {
-	data := string(aoc.Try(os.ReadFile(input)))
-	grid := s.Fields(data)
+	grid := s.Fields(string(aoc.Try(os.ReadFile(input))))
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
@@ -44,8 +43,7 @@ func part1(input string) int {
 }
 
 func part2(input string) int {
-	data := string(aoc.Try(os.ReadFile(input)))
-	grid := s.Fields(data)
+	grid := s.Fields(string(aoc.Try(os.ReadFile(input))))
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
