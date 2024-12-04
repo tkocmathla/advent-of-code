@@ -26,7 +26,7 @@ func is_x_mas(grid []string, loc aoc.Point) bool {
 	return false
 }
 
-func part1(input string) int {
+func Part1(input string) int {
 	grid := s.Fields(string(aoc.Try(os.ReadFile(input))))
 	xmas := 0
 	for y := range grid {
@@ -41,7 +41,7 @@ func part1(input string) int {
 	return xmas
 }
 
-func part2(input string) int {
+func Part2(input string) int {
 	grid := s.Fields(string(aoc.Try(os.ReadFile(input))))
 	xmas := 0
 	for y := range grid {
@@ -55,6 +55,6 @@ func part2(input string) int {
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(part1, "data/day4.txt"), 2642)
-	aoc.AssertEq(aoc.TimeFunc(part2, "data/day4.txt"), 1974)
+	aoc.AssertEq(aoc.TimeFunc(Part1, "data/day4.txt"), 2642)
+	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day4.txt"), 1974)
 }
