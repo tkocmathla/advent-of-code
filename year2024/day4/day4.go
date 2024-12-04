@@ -6,20 +6,9 @@ import (
 	s "strings"
 )
 
-func to_grid(data string) [][]byte {
-	var grid [][]byte
-	for i, line := range s.Fields(data) {
-		grid = append(grid, []byte{})
-		for j := range line {
-			grid[i] = append(grid[i], line[j])
-		}
-	}
-	return grid
-}
-
 var xmas = [4]byte{'X', 'M', 'A', 'S'}
 
-func is_xmas(grid [][]byte, loc aoc.Point, dir aoc.Point) bool {
+func is_xmas(grid []string, loc aoc.Point, dir aoc.Point) bool {
 	ok := true
 	for i := 0; i < 4 && ok; i++ {
 		y := loc.Y + (dir.Y * i)
@@ -30,7 +19,7 @@ func is_xmas(grid [][]byte, loc aoc.Point, dir aoc.Point) bool {
 	return ok
 }
 
-func is_x_mas(grid [][]byte, loc aoc.Point) bool {
+func is_x_mas(grid []string, loc aoc.Point) bool {
 	in_bounds := loc.Y > 0 && loc.X > 0 && loc.Y < len(grid)-1 && loc.X < len(grid[loc.Y])-1
 	if !in_bounds {
 		return false
@@ -43,7 +32,7 @@ func is_x_mas(grid [][]byte, loc aoc.Point) bool {
 
 func part1(input string) int {
 	data := string(aoc.Try(os.ReadFile(input)))
-	grid := to_grid(data)
+	grid := s.Fields(data)
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
@@ -59,7 +48,7 @@ func part1(input string) int {
 
 func part2(input string) int {
 	data := string(aoc.Try(os.ReadFile(input)))
-	grid := to_grid(data)
+	grid := s.Fields(data)
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
