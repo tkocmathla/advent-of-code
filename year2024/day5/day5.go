@@ -22,7 +22,6 @@ func parse(raw string) Rules {
 func solve(input string, f func(Rules, []string, bool) int) int {
 	data := s.Split(string(aoc.Try(os.ReadFile(input))), "\n\n")
 	rules := parse(data[0])
-
 	mid_sums := 0
 	for _, update := range s.Split(s.TrimSpace(data[1]), "\n") {
 		sorted := true
