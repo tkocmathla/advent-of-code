@@ -10,7 +10,7 @@ import (
 
 type Rules map[string][]string
 
-func parseRules(raw string) Rules {
+func parse(raw string) Rules {
 	rules := make(Rules)
 	for _, pair := range s.Split(raw, "\n") {
 		nums := s.Split(pair, "|")
@@ -19,9 +19,9 @@ func parseRules(raw string) Rules {
 	return rules
 }
 
-func Part1(input string) int {
+func solve(input string, f func(Rules, []string, bool) int) int {
 	data := s.Split(string(aoc.Try(os.ReadFile(input))), "\n\n")
-	rules := parseRules(data[0])
+	rules := parse(data[0])
 
 	mid_sums := 0
 	for _, update := range s.Split(s.TrimSpace(data[1]), "\n") {
@@ -36,43 +36,35 @@ func Part1(input string) int {
 			}
 			seen[num] = true
 		}
-		if sorted {
-			mid_sums += aoc.Try(strconv.Atoi(nums[len(nums)/2]))
-		}
+		mid_sums += f(rules, nums, sorted)
 	}
 	return mid_sums
 }
 
-func Part2(input string) int {
-	data := s.Split(string(aoc.Try(os.ReadFile(input))), "\n\n")
-	rules := parseRules(data[0])
+func Part1(input string) int {
+	return solve(input, func(rules Rules, nums []string, sorted bool) int {
+		if !sorted {
+			return 0
+		}
+		return aoc.Try(strconv.Atoi(nums[len(nums)/2]))
+	})
+}
 
-	mid_sums := 0
-	for _, update := range s.Split(s.TrimSpace(data[1]), "\n") {
-		sorted := true
-		seen := make(map[string]bool)
-		nums := s.Split(update, ",")
-		for _, num := range nums {
-			for _, next := range rules[num] {
-				if _, has := seen[next]; has {
-					sorted = false
+func Part2(input string) int {
+	return solve(input, func(rules Rules, nums []string, sorted bool) int {
+		if sorted {
+			return 0
+		}
+		sort.Slice(nums, func(i, j int) bool {
+			for _, next := range rules[nums[j]] {
+				if nums[i] == next {
+					return false
 				}
 			}
-			seen[num] = true
-		}
-		if !sorted {
-			sort.Slice(nums, func(i, j int) bool {
-				for _, next := range rules[nums[j]] {
-					if nums[i] == next {
-						return false
-					}
-				}
-				return true
-			})
-			mid_sums += aoc.Try(strconv.Atoi(nums[len(nums)/2]))
-		}
-	}
-	return mid_sums
+			return true
+		})
+		return aoc.Try(strconv.Atoi(nums[len(nums)/2]))
+	})
 }
 
 func Solve() {
