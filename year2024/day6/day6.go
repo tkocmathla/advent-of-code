@@ -4,6 +4,8 @@ import (
 	aoc "aoc/util"
 	"os"
 	s "strings"
+	"sync"
+	"sync/atomic"
 )
 
 type Guard struct {
@@ -46,28 +48,34 @@ func Part1(input string) int {
 	return len(seen)
 }
 
-func Part2(input string) int {
+func Part2(input string) int32 {
+	var loops int32
+	var wg sync.WaitGroup
 	grid := s.Fields(string(aoc.Try(os.ReadFile(input))))
-	loops := 0
 	for y := range grid {
 		for x := range grid[y] {
-			if (aoc.Point{Y: y, X: x} == start) || grid[y][x] == '#' {
-				continue
-			}
-			orig := grid[y]
-			grid[y] = grid[y][:x] + "#" + grid[y][x+1:]
-			guard := Guard{loc: start, dir: aoc.N}
-			seen := make(map[Guard]bool)
-			for ; in_bounds(grid, guard.loc); step(grid, &guard) {
-				if _, has := seen[guard]; has {
-					loops += 1
-					break
+			wg.Add(1)
+			go func(x int, y int) {
+				defer wg.Done()
+				if (aoc.Point{Y: y, X: x} == start) || grid[y][x] == '#' {
+					return
 				}
-				seen[guard] = true
-			}
-			grid[y] = orig
+				local_grid := make([]string, len(grid))
+				copy(local_grid, grid)
+				local_grid[y] = local_grid[y][:x] + "#" + local_grid[y][x+1:]
+				guard := Guard{loc: start, dir: aoc.N}
+				seen := make(map[Guard]bool)
+				for ; in_bounds(local_grid, guard.loc); step(local_grid, &guard) {
+					if _, has := seen[guard]; has {
+						atomic.AddInt32(&loops, 1)
+						break
+					}
+					seen[guard] = true
+				}
+			}(x, y)
 		}
 	}
+	wg.Wait()
 	return loops
 }
 
