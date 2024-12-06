@@ -48,6 +48,26 @@ func Part1(input string) int {
 	return len(seen)
 }
 
+func hasCycle(orig_grid *[]string, x, y int) bool {
+	if (aoc.Point{Y: y, X: x} == start) || (*orig_grid)[y][x] == '#' {
+		return false
+	}
+
+	local_grid := make([]string, len(*orig_grid))
+	copy(local_grid, *orig_grid)
+	local_grid[y] = local_grid[y][:x] + "#" + local_grid[y][x+1:]
+
+	guard := Guard{loc: start, dir: aoc.N}
+	seen := make(map[Guard]bool)
+	for ; in_bounds(local_grid, guard.loc); step(local_grid, &guard) {
+		if _, has := seen[guard]; has {
+			return true
+		}
+		seen[guard] = true
+	}
+	return false
+}
+
 func Part2(input string) int32 {
 	var loops int32
 	var wg sync.WaitGroup
@@ -55,22 +75,10 @@ func Part2(input string) int32 {
 	for y := range grid {
 		for x := range grid[y] {
 			wg.Add(1)
-			go func(x int, y int) {
+			go func(x, y int) {
 				defer wg.Done()
-				if (aoc.Point{Y: y, X: x} == start) || grid[y][x] == '#' {
-					return
-				}
-				local_grid := make([]string, len(grid))
-				copy(local_grid, grid)
-				local_grid[y] = local_grid[y][:x] + "#" + local_grid[y][x+1:]
-				guard := Guard{loc: start, dir: aoc.N}
-				seen := make(map[Guard]bool)
-				for ; in_bounds(local_grid, guard.loc); step(local_grid, &guard) {
-					if _, has := seen[guard]; has {
-						atomic.AddInt32(&loops, 1)
-						break
-					}
-					seen[guard] = true
+				if hasCycle(&grid, x, y) {
+					atomic.AddInt32(&loops, 1)
 				}
 			}(x, y)
 		}
