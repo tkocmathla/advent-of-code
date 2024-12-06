@@ -40,7 +40,7 @@ func step(grid *[]string, guard *Guard, x, y int) {
 
 func walk(grid []string, loc aoc.Point) map[aoc.Point]bool {
 	guard := Guard{loc: loc, dir: aoc.N}
-	seen := make(map[aoc.Point]bool)
+	seen := make(map[aoc.Point]bool, 5000)
 	for seen[guard.loc] = true; valid(&grid, guard.loc); step(&grid, &guard, -1, -1) {
 		seen[guard.loc] = true
 	}
@@ -52,7 +52,7 @@ func cyclic(grid *[]string, x, y int) bool {
 		return false
 	}
 	guard := Guard{loc: start, dir: aoc.N}
-	seen := make(map[Guard]bool)
+	seen := make(map[Guard]bool, 5000)
 	for ; valid(grid, guard.loc); step(grid, &guard, x, y) {
 		if _, has := seen[guard]; has {
 			return true
