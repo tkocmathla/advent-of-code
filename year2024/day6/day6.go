@@ -19,9 +19,9 @@ func valid(grid *[]string, loc aoc.Point) bool {
 	return loc.Y >= 0 && loc.X >= 0 && loc.Y < len(*grid) && loc.X < len((*grid)[0])
 }
 
-func step(grid *[]string, guard *Guard) {
+func step(grid *[]string, guard *Guard, x, y int) {
 	next := aoc.Point{Y: guard.loc.Y + guard.dir.Y, X: guard.loc.X + guard.dir.X}
-	if valid(grid, next) && (*grid)[next.Y][next.X] == '#' {
+	if valid(grid, next) && ((*grid)[next.Y][next.X] == '#' || (next.Y == y && next.X == x)) {
 		switch guard.dir {
 		case aoc.N:
 			guard.dir = aoc.E
@@ -32,7 +32,7 @@ func step(grid *[]string, guard *Guard) {
 		case aoc.W:
 			guard.dir = aoc.N
 		}
-		step(grid, guard)
+		step(grid, guard, x, y)
 	} else {
 		guard.loc = next
 	}
@@ -41,23 +41,19 @@ func step(grid *[]string, guard *Guard) {
 func walk(grid []string, loc aoc.Point) map[aoc.Point]bool {
 	guard := Guard{loc: loc, dir: aoc.N}
 	seen := make(map[aoc.Point]bool)
-	for seen[guard.loc] = true; valid(&grid, guard.loc); step(&grid, &guard) {
+	for seen[guard.loc] = true; valid(&grid, guard.loc); step(&grid, &guard, -1, -1) {
 		seen[guard.loc] = true
 	}
 	return seen
 }
 
-func cyclic(orig_grid *[]string, x, y int) bool {
-	if (aoc.Point{Y: y, X: x} == start) || (*orig_grid)[y][x] == '#' {
+func cyclic(grid *[]string, x, y int) bool {
+	if (aoc.Point{Y: y, X: x} == start) || (*grid)[y][x] == '#' {
 		return false
 	}
-	local_grid := make([]string, len(*orig_grid))
-	copy(local_grid, *orig_grid)
-	local_grid[y] = local_grid[y][:x] + "#" + local_grid[y][x+1:]
-
 	guard := Guard{loc: start, dir: aoc.N}
 	seen := make(map[Guard]bool)
-	for ; valid(&local_grid, guard.loc); step(&local_grid, &guard) {
+	for ; valid(grid, guard.loc); step(grid, &guard, x, y) {
 		if _, has := seen[guard]; has {
 			return true
 		}
