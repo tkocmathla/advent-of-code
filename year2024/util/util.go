@@ -13,16 +13,20 @@ type Point struct {
 	Y int // row
 }
 
-var Dirs = [8]Point{
-	{X: -1, Y: -1},
-	{X: -1, Y: 0},
-	{X: -1, Y: 1},
-	{X: 0, Y: 1},
-	{X: 1, Y: 1},
-	{X: 1, Y: 0},
-	{X: 1, Y: -1},
-	{X: 0, Y: -1},
+func (lhs Point) Add(rhs Point) Point {
+	return Point{X: lhs.X + rhs.X, Y: lhs.Y + rhs.Y}
 }
+
+var N = Point{Y: -1, X: 0}
+var E = Point{Y: 0, X: 1}
+var S = Point{Y: 1, X: 0}
+var W = Point{Y: 0, X: -1}
+var NE = N.Add(E)
+var SE = S.Add(E)
+var SW = S.Add(W)
+var NW = N.Add(W)
+
+var Dirs = [8]Point{N, NE, E, SE, S, SW, W, NW}
 
 // Abs returns |a - b| for integer types.
 func Abs[T constraints.Integer](a, b T) T {
