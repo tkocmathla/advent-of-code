@@ -34,16 +34,44 @@ func step(grid []string, guard *Guard) {
 	}
 }
 
+var start = aoc.Point{Y: 45, X: 42}
+
 func Part1(input string) int {
 	grid := s.Fields(string(aoc.Try(os.ReadFile(input))))
-	guard := Guard{loc: aoc.Point{Y: 45, X: 42}, dir: aoc.N}
+	guard := Guard{loc: start, dir: aoc.N}
 	seen := make(map[aoc.Point]bool)
-	for ; in_bounds(grid, guard.loc); step(grid, &guard) {
+	for seen[guard.loc] = true; in_bounds(grid, guard.loc); step(grid, &guard) {
 		seen[guard.loc] = true
 	}
 	return len(seen)
 }
 
+func Part2(input string) int {
+	grid := s.Fields(string(aoc.Try(os.ReadFile(input))))
+	loops := 0
+	for y := range grid {
+		for x := range grid[y] {
+			if (aoc.Point{Y: y, X: x} == start) || grid[y][x] == '#' {
+				continue
+			}
+			orig := grid[y]
+			grid[y] = grid[y][:x] + "#" + grid[y][x+1:]
+			guard := Guard{loc: start, dir: aoc.N}
+			seen := make(map[Guard]bool)
+			for ; in_bounds(grid, guard.loc); step(grid, &guard) {
+				if _, has := seen[guard]; has {
+					loops += 1
+					break
+				}
+				seen[guard] = true
+			}
+			grid[y] = orig
+		}
+	}
+	return loops
+}
+
 func Solve() {
 	aoc.AssertEq(aoc.TimeFunc(Part1, "data/day6.txt"), 4454)
+	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day6.txt"), 1503)
 }
