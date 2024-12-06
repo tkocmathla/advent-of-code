@@ -36,7 +36,7 @@ func step(grid []string, guard *Guard) {
 
 func Part1(input string) int {
 	grid := s.Fields(string(aoc.Try(os.ReadFile(input))))
-	guard := Guard{loc: aoc.Point{Y: 45, X: 42}, dir: aoc.Point{Y: -1, X: 0}}
+	guard := Guard{loc: aoc.Point{Y: 45, X: 42}, dir: aoc.N}
 	seen := make(map[aoc.Point]bool)
 	for ; in_bounds(grid, guard.loc); step(grid, &guard) {
 		seen[guard.loc] = true
