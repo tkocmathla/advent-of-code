@@ -37,14 +37,14 @@ func parse(input string) []Equation {
 	return eqs
 }
 
-func eval_op(eq Equation, ops []Op, op Op) bool {
+func eval(eq Equation, ops []Op, op Op) bool {
 	if len(eq.xs) == 0 {
 		return eq.x == eq.val
 	}
 	eq.x = op(eq.x, eq.xs[0])
 	eq.xs = eq.xs[1:]
 	for _, op := range ops {
-		if eval_op(eq, ops, op) {
+		if eval(eq, ops, op) {
 			return true
 		}
 	}
@@ -55,7 +55,7 @@ func solve(input string, ops []Op) int {
 	sum := 0
 	for _, eq := range parse(input) {
 		for _, op := range ops {
-			if eval_op(eq, ops, op) {
+			if eval(eq, ops, op) {
 				sum += eq.val
 				break
 			}
