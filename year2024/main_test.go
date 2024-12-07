@@ -3,6 +3,7 @@ package main
 import (
 	"aoc/day4"
 	"aoc/day6"
+	"aoc/day7"
 	"testing"
 )
 
@@ -27,5 +28,17 @@ func BenchmarkDay6Part1(b *testing.B) {
 func BenchmarkDay6Part2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		day6.Part2("data/day6.txt")
+	}
+}
+
+func BenchmarkDay7Part1(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		day7.Part1("data/day7.txt")
+	}
+}
+
+func BenchmarkDay7Part2(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		day7.Part2("data/day7.txt")
 	}
 }
