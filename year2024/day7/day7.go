@@ -18,9 +18,7 @@ type Op func(a, b int) int
 
 var Add = func(a, b int) int { return a + b }
 var Mul = func(a, b int) int { return a * b }
-var Cat = func(a, b int) int {
-	return aoc.Try(strconv.Atoi(fmt.Sprintf("%d%d", a, b)))
-}
+var Cat = func(a, b int) int { return aoc.Try(strconv.Atoi(fmt.Sprintf("%d%d", a, b))) }
 
 func parse(input string) []Equation {
 	var eqs []Equation
@@ -34,6 +32,8 @@ func parse(input string) []Equation {
 		for _, num := range s.Split(toks[1], " ") {
 			eq.xs = append(eq.xs, aoc.Try(strconv.Atoi(num)))
 		}
+		eq.x = eq.xs[0]
+		eq.xs = eq.xs[1:]
 		eqs = append(eqs, eq)
 	}
 	return eqs
@@ -53,22 +53,14 @@ func eval_op(eq Equation, ops []Op, op Op) bool {
 	return false
 }
 
-func eval_eq(eq Equation, ops []Op) bool {
-	eq.x = eq.xs[0]
-	eq.xs = eq.xs[1:]
-	for _, op := range ops {
-		if eval_op(eq, ops, op) {
-			return true
-		}
-	}
-	return false
-}
-
 func solve(input string, ops []Op) int {
 	sum := 0
 	for _, eq := range parse(input) {
-		if eval_eq(eq, ops) {
-			sum += eq.val
+		for _, op := range ops {
+			if eval_op(eq, ops, op) {
+				sum += eq.val
+				break
+			}
 		}
 	}
 	return sum
