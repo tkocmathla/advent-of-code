@@ -28,13 +28,12 @@ var NW = N.Add(W)
 
 var Dirs = [8]Point{N, NE, E, SE, S, SW, W, NW}
 
-// Abs returns |a - b| for integer types.
-func Abs[T constraints.Integer](a, b T) T {
-	if a < b {
-		return b - a
-	} else {
-		return a - b
+// Abs returns |a| for integer types.
+func Abs[T constraints.Integer](a T) T {
+	if a < 0 {
+		return -a
 	}
+	return a
 }
 
 // Try is a simple wrapper for functions that return a single value and an error result.

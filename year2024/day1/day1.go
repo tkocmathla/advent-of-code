@@ -24,7 +24,7 @@ func part1(input string) int {
 
 	sum := 0
 	for i, x := range l {
-		sum += aoc.Abs(x, r[i])
+		sum += aoc.Abs(x - r[i])
 	}
 	return sum
 }

@@ -28,7 +28,7 @@ func monotonic(xs []int) bool {
 
 func gradual(xs []int) bool {
 	for i, x := range xs[1:] {
-		diff := aoc.Abs(x, xs[i])
+		diff := aoc.Abs(x - xs[i])
 		if diff < 1 || diff > 3 {
 			return false
 		}
