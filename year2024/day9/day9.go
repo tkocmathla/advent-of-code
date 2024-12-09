@@ -3,38 +3,17 @@ package day9
 import (
 	aoc "aoc/util"
 	"container/list"
-	"fmt"
 	"os"
 	"strconv"
 	s "strings"
 )
 
 type Block struct {
-	i  int
-	id int
+	i   int // block index
+	fid int // file id
 }
 
 var FreeId = -1
-
-func dump(disk *list.List) {
-	for e := disk.Front(); e != nil; e = e.Next() {
-		if e.Value == FreeId {
-			fmt.Print(".")
-		} else {
-			fmt.Printf("%v|", e.Value.(*Block).id)
-		}
-	}
-	fmt.Println()
-}
-
-func find_free(disk *list.List, start *list.Element) *list.Element {
-	for e := start; e != nil; e = e.Next() {
-		if e.Value.(*Block).id == FreeId {
-			return e
-		}
-	}
-	return nil
-}
 
 func parse(input string) *list.List {
 	data := s.TrimSpace(string(aoc.Try(os.ReadFile(input))))
@@ -44,9 +23,9 @@ func parse(input string) *list.List {
 		size := aoc.Try(strconv.Atoi(string(c)))
 		for j := 0; j < size; j++ {
 			if i%2 == 0 {
-				disk.PushBack(&Block{i: index, id: i / 2})
+				disk.PushBack(&Block{i: index, fid: i / 2})
 			} else {
-				disk.PushBack(&Block{i: index, id: FreeId})
+				disk.PushBack(&Block{i: index, fid: FreeId})
 			}
 			index += 1
 		}
@@ -54,28 +33,33 @@ func parse(input string) *list.List {
 	return disk
 }
 
+func find_free(disk *list.List, start *list.Element) *list.Element {
+	for e := start; e != nil; e = e.Next() {
+		if e.Value.(*Block).fid == FreeId {
+			return e
+		}
+	}
+	return nil
+}
+
 func Part1(input string) int {
 	disk := parse(input)
 	free := find_free(disk, disk.Front())
 	for e := disk.Back(); e != nil; e = e.Prev() {
 		blk := e.Value.(*Block)
-		if blk.id == FreeId {
+		if blk.fid == FreeId {
 			continue
 		}
 		if free = find_free(disk, free); free.Value.(*Block).i > blk.i {
 			break
 		}
-		free.Value.(*Block).id = blk.id
-		blk.id = FreeId
+		free.Value.(*Block).fid = blk.fid
+		blk.fid = FreeId
 	}
 
-	var sum int
-	for e := disk.Front(); e != nil; e = e.Next() {
-		blk := e.Value.(*Block)
-		if blk.id == FreeId {
-			break
-		}
-		sum += blk.id * blk.i
+	sum := 0
+	for e := disk.Front(); e != nil && e.Value.(*Block).fid != FreeId; e = e.Next() {
+		sum += e.Value.(*Block).fid * e.Value.(*Block).i
 	}
 
 	return sum
