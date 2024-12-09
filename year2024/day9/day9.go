@@ -25,9 +25,9 @@ func parse(input string) []int {
 	return disk
 }
 
-func find_free(disk *[]int, start int) int {
-	for i, fid := range *disk {
-		if fid == FreeId {
+func find_free(disk *[]int, i int) int {
+	for ; i < len(*disk); i++ {
+		if (*disk)[i] == FreeId {
 			return i
 		}
 	}
@@ -46,7 +46,6 @@ func Part1(input string) int {
 		}
 		disk[free], disk[i] = disk[i], disk[free]
 	}
-
 	sum := 0
 	for i, fid := range disk {
 		if fid != FreeId {
