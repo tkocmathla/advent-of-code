@@ -15,50 +15,42 @@ func digits(x int) int {
 	return n
 }
 
-func split(stone int) Result {
-	n := digits(stone)
-	lhs := stone
+func split(lhs int) []int {
+	n := digits(lhs)
 	rhs := 0
 	for i := 0; i < n/2; i++ {
 		rhs += lhs % 10 * int(math.Pow(10, float64(i)))
 		lhs /= 10
 	}
-	return Result{lhs: rhs, rhs: lhs}
+	return []int{lhs, rhs}
 }
 
-type Result struct {
-	lhs int
-	rhs interface{}
-}
-
-func transform(stone int) Result {
+func transform(stone int) []int {
 	if stone == 0 {
-		return Result{lhs: 1, rhs: nil}
+		return []int{1}
 	} else if digits(stone)%2 == 0 {
 		return split(stone)
 	}
-	return Result{lhs: stone * 2024, rhs: nil}
+	return []int{stone * 2024}
 }
 
-type CacheKey struct {
+type Cache map[Key]int
+type Key struct {
 	x int // stone value
 	n int // remaining blinks
 }
-
-type Cache map[CacheKey]int
 
 func blink(cache *Cache, stone int, n int) int {
 	if n <= 0 {
 		return 1
 	}
-	key := CacheKey{x: stone, n: n}
+	key := Key{x: stone, n: n}
 	if count, has := (*cache)[key]; has {
 		return count
 	}
-	res := transform(stone)
-	count := blink(cache, res.lhs, n-1)
-	if res.rhs != nil {
-		count += blink(cache, res.rhs.(int), n-1)
+	count := 0
+	for _, x := range transform(stone) {
+		count += blink(cache, x, n-1)
 	}
 	(*cache)[key] = count
 	return count
