@@ -2,20 +2,11 @@ package day11
 
 import (
 	aoc "aoc/util"
-	"container/list"
-	"fmt"
 	"math"
 	"os"
 	"strconv"
 	s "strings"
 )
-
-func dump(stones *list.List) {
-	for e := stones.Front(); e != nil; e = e.Next() {
-		fmt.Printf("%v ", e.Value)
-	}
-	fmt.Println()
-}
 
 func digits(x int) int {
 	n := 0
@@ -24,17 +15,14 @@ func digits(x int) int {
 	return n
 }
 
-func split(stones *list.List, stone *list.Element) Result {
-	x := stone.Value.(int)
-	n := digits(x)
-	lhs := x
+func split(stone int) Result {
+	n := digits(stone)
+	lhs := stone
 	rhs := 0
 	for i := 0; i < n/2; i++ {
 		rhs += lhs % 10 * int(math.Pow(10, float64(i)))
 		lhs /= 10
 	}
-	//stones.InsertBefore(lhs, stone)
-	//stone.Value = rhs
 	return Result{lhs: rhs, rhs: lhs}
 }
 
@@ -43,42 +31,47 @@ type Result struct {
 	rhs interface{}
 }
 
-func transform(stones *list.List, stone *list.Element) Result {
-	x := stone.Value.(int)
-	if x == 0 {
+func transform(stone int) Result {
+	if stone == 0 {
 		return Result{lhs: 1, rhs: nil}
-	} else if digits(x)%2 == 0 {
-		return split(stones, stone)
+	} else if digits(stone)%2 == 0 {
+		return split(stone)
 	}
-	return Result{lhs: x * 2024, rhs: nil}
+	return Result{lhs: stone * 2024, rhs: nil}
 }
 
-var cache = make(map[int]Result)
+type CacheKey struct {
+	x int // stone value
+	n int // remaining blinks
+}
 
-func blink(stones *list.List) {
-	for stone := stones.Front(); stone != nil; stone = stone.Next() {
-		res, has := cache[stone.Value.(int)]
-		if !has {
-			res = transform(stones, stone)
-			cache[stone.Value.(int)] = res
-		}
-		stone.Value = res.lhs
-		if res.rhs != nil {
-			stones.InsertBefore(res.rhs, stone)
-		}
+type Cache map[CacheKey]int
+
+func blink(cache *Cache, stone int, n int) int {
+	if n <= 0 {
+		return 1
 	}
+	key := CacheKey{x: stone, n: n}
+	if count, has := (*cache)[key]; has {
+		return count
+	}
+	res := transform(stone)
+	count := blink(cache, res.lhs, n-1)
+	if res.rhs != nil {
+		count += blink(cache, res.rhs.(int), n-1)
+	}
+	(*cache)[key] = count
+	return count
 }
 
 func solve(input string, n int) int {
-	stones := list.New()
+	cache := make(Cache)
+	count := 0
 	for _, x := range s.Fields(string(aoc.Try(os.ReadFile(input)))) {
-		stones.PushBack(aoc.Try(strconv.Atoi(x)))
+		stone := aoc.Try(strconv.Atoi(x))
+		count += blink(&cache, stone, n)
 	}
-	for i := 0; i < n; i++ {
-		fmt.Println(i, stones.Len())
-		blink(stones)
-	}
-	return stones.Len()
+	return count
 }
 
 func Part1(input string) int {
@@ -91,5 +84,5 @@ func Part2(input string) int {
 
 func Solve() {
 	aoc.AssertEq(aoc.TimeFunc(Part1, "data/day11.txt"), 204022)
-	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day11.txt"), 0)
+	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day11.txt"), 241651071960597)
 }
