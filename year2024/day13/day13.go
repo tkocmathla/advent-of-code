@@ -16,12 +16,16 @@ type Machine struct {
 	py int
 }
 
+var format = `Button A: X+%d, Y+%d
+Button B: X+%d, Y+%d
+Prize: X=%d, Y=%d`
+
 func parse(input string, offset int) []Machine {
 	var machines []Machine
 	groups := s.Split(s.TrimSpace(string(aoc.Try(os.ReadFile(input)))), "\n\n")
 	for _, group := range groups {
 		var m Machine
-		fmt.Sscanf(group, "Button A: X+%d, Y+%d\nButton B: X+%d, Y+%d\nPrize: X=%d, Y=%d", &m.ax, &m.ay, &m.bx, &m.by, &m.px, &m.py)
+		fmt.Sscanf(group, format, &m.ax, &m.ay, &m.bx, &m.by, &m.px, &m.py)
 		m.px, m.py = m.px+offset, m.py+offset
 		machines = append(machines, m)
 	}
