@@ -1,7 +1,7 @@
 package day7
 
 import (
-	aoc "aoc/util"
+	. "aoc/base/aoc"
 	"fmt"
 	"os"
 	"regexp"
@@ -19,18 +19,18 @@ type Op func(a, b int) int
 
 var Add = func(a, b int) int { return a + b }
 var Mul = func(a, b int) int { return a * b }
-var Cat = func(a, b int) int { return aoc.Try(strconv.Atoi(fmt.Sprintf("%d%d", a, b))) }
+var Cat = func(a, b int) int { return Try(strconv.Atoi(fmt.Sprintf("%d%d", a, b))) }
 
 var re = regexp.MustCompile(`(\d+):((?: \d+)+)`)
 
 func parse(input string) []Equation {
 	var eqs []Equation
-	data := string(aoc.Try(os.ReadFile(input)))
+	data := string(Try(os.ReadFile(input)))
 	for _, m := range re.FindAllStringSubmatch(data, -1) {
 		xs := s.Fields(m[2])
-		eq := Equation{val: aoc.Try(strconv.Atoi(m[1])), x: aoc.Try(strconv.Atoi(xs[0]))}
+		eq := Equation{val: Try(strconv.Atoi(m[1])), x: Try(strconv.Atoi(xs[0]))}
 		for _, x := range xs[1:] {
-			eq.xs = append(eq.xs, aoc.Try(strconv.Atoi(x)))
+			eq.xs = append(eq.xs, Try(strconv.Atoi(x)))
 		}
 		eqs = append(eqs, eq)
 	}
@@ -73,6 +73,6 @@ func Part2(input string) int {
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(Part1, "data/day7.txt"), 303876485655)
-	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day7.txt"), 146111650210682)
+	AssertEq(TimeFunc(Part1, "data/day7.txt"), 303876485655)
+	AssertEq(TimeFunc(Part2, "data/day7.txt"), 146111650210682)
 }

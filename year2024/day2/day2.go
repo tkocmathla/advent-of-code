@@ -1,7 +1,8 @@
 package day2
 
 import (
-	aoc "aoc/util"
+	. "aoc/base/aoc"
+	. "aoc/base/moremath"
 	"bufio"
 	"os"
 	"strconv"
@@ -11,7 +12,7 @@ import (
 func strToInt(strs []string) []int {
 	var ints []int
 	for _, x := range strs {
-		ints = append(ints, aoc.Try(strconv.Atoi(x)))
+		ints = append(ints, Try(strconv.Atoi(x)))
 	}
 	return ints
 }
@@ -28,7 +29,7 @@ func monotonic(xs []int) bool {
 
 func gradual(xs []int) bool {
 	for i, x := range xs[1:] {
-		diff := aoc.Abs(x - xs[i])
+		diff := Abs(x - xs[i])
 		if diff < 1 || diff > 3 {
 			return false
 		}
@@ -51,7 +52,7 @@ func safeWithReplacement(xs []int) bool {
 }
 
 func solve(input string, pred func([]int) bool) int {
-	file := aoc.Try(os.Open(input))
+	file := Try(os.Open(input))
 
 	sum := 0
 	scanner := bufio.NewScanner(file)
@@ -73,6 +74,6 @@ func part2(input string) int {
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(part1, "data/day2.txt"), 631)
-	aoc.AssertEq(aoc.TimeFunc(part2, "data/day2.txt"), 665)
+	AssertEq(TimeFunc(part1, "data/day2.txt"), 631)
+	AssertEq(TimeFunc(part2, "data/day2.txt"), 665)
 }

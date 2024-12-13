@@ -1,7 +1,7 @@
 package day13
 
 import (
-	aoc "aoc/util"
+	. "aoc/base/aoc"
 	"fmt"
 	"os"
 	s "strings"
@@ -22,7 +22,7 @@ Prize: X=%d, Y=%d`
 
 func parse(input string, offset int) []Machine {
 	var machines []Machine
-	groups := s.Split(s.TrimSpace(string(aoc.Try(os.ReadFile(input)))), "\n\n")
+	groups := s.Split(s.TrimSpace(string(Try(os.ReadFile(input)))), "\n\n")
 	for _, group := range groups {
 		var m Machine
 		fmt.Sscanf(group, format, &m.ax, &m.ay, &m.bx, &m.by, &m.px, &m.py)
@@ -64,6 +64,6 @@ func Part2(input string) int {
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(Part1, "data/day13.txt"), 29436)
-	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day13.txt"), 103729094227877)
+	AssertEq(TimeFunc(Part1, "data/day13.txt"), 29436)
+	AssertEq(TimeFunc(Part2, "data/day13.txt"), 103729094227877)
 }

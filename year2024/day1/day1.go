@@ -1,7 +1,8 @@
 package day1
 
 import (
-	aoc "aoc/util"
+	. "aoc/base/aoc"
+	. "aoc/base/moremath"
 	"bufio"
 	"os"
 	"sort"
@@ -10,35 +11,35 @@ import (
 )
 
 func part1(input string) int {
-	file := aoc.Try(os.Open(input))
+	file := Try(os.Open(input))
 
 	var l, r []int
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		xs := s.Fields(scanner.Text())
-		l = append(l, aoc.Try(strconv.Atoi(xs[0])))
-		r = append(r, aoc.Try(strconv.Atoi(xs[1])))
+		l = append(l, Try(strconv.Atoi(xs[0])))
+		r = append(r, Try(strconv.Atoi(xs[1])))
 	}
 	sort.Ints(l)
 	sort.Ints(r)
 
 	sum := 0
 	for i, x := range l {
-		sum += aoc.Abs(x - r[i])
+		sum += Abs(x - r[i])
 	}
 	return sum
 }
 
 func part2(input string) int {
-	file := aoc.Try(os.Open(input))
+	file := Try(os.Open(input))
 
 	var l []int
 	r := make(map[int]int)
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		xs := s.Fields(scanner.Text())
-		l = append(l, aoc.Try(strconv.Atoi(xs[0])))
-		r[aoc.Try(strconv.Atoi(xs[1]))] += 1
+		l = append(l, Try(strconv.Atoi(xs[0])))
+		r[Try(strconv.Atoi(xs[1]))] += 1
 	}
 	sum := 0
 	for _, x := range l {
@@ -48,6 +49,6 @@ func part2(input string) int {
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(part1, "data/day1.txt"), 1320851)
-	aoc.AssertEq(aoc.TimeFunc(part2, "data/day1.txt"), 26859182)
+	AssertEq(TimeFunc(part1, "data/day1.txt"), 1320851)
+	AssertEq(TimeFunc(part2, "data/day1.txt"), 26859182)
 }

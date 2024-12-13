@@ -1,7 +1,7 @@
 package day3
 
 import (
-	aoc "aoc/util"
+	. "aoc/base/aoc"
 	"os"
 	"regexp"
 	"strconv"
@@ -10,7 +10,7 @@ import (
 var re = regexp.MustCompile(`mul\((\d{1,3}),(\d{1,3})\)|do\(\)|don't\(\)`)
 
 func solve(input string, allow_cond bool) int {
-	data := string(aoc.Try(os.ReadFile(input)))
+	data := string(Try(os.ReadFile(input)))
 	enabled := true
 	prod := 0
 	for _, match := range re.FindAllStringSubmatch(data, -1) {
@@ -20,7 +20,7 @@ func solve(input string, allow_cond bool) int {
 			enabled = true
 		} else if match[0][:3] == "mul" {
 			if !allow_cond || enabled {
-				prod += aoc.Try(strconv.Atoi(match[1])) * aoc.Try(strconv.Atoi(match[2]))
+				prod += Try(strconv.Atoi(match[1])) * Try(strconv.Atoi(match[2]))
 			}
 		}
 	}
@@ -36,6 +36,6 @@ func part2(input string) int {
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(part1, "data/day3.txt"), 189527826)
-	aoc.AssertEq(aoc.TimeFunc(part2, "data/day3.txt"), 63013756)
+	AssertEq(TimeFunc(part1, "data/day3.txt"), 189527826)
+	AssertEq(TimeFunc(part2, "data/day3.txt"), 63013756)
 }

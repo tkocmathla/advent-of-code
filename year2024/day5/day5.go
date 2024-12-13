@@ -1,7 +1,7 @@
 package day5
 
 import (
-	aoc "aoc/util"
+	. "aoc/base/aoc"
 	"os"
 	"sort"
 	"strconv"
@@ -20,7 +20,7 @@ func parse(raw string) Rules {
 }
 
 func solve(input string, f func(Rules, []string, bool) int) int {
-	data := s.Split(string(aoc.Try(os.ReadFile(input))), "\n\n")
+	data := s.Split(string(Try(os.ReadFile(input))), "\n\n")
 	rules := parse(data[0])
 	mid_sums := 0
 	for _, update := range s.Split(s.TrimSpace(data[1]), "\n") {
@@ -45,7 +45,7 @@ func Part1(input string) int {
 		if !sorted {
 			return 0
 		}
-		return aoc.Try(strconv.Atoi(nums[len(nums)/2]))
+		return Try(strconv.Atoi(nums[len(nums)/2]))
 	})
 }
 
@@ -62,11 +62,11 @@ func Part2(input string) int {
 			}
 			return true
 		})
-		return aoc.Try(strconv.Atoi(nums[len(nums)/2]))
+		return Try(strconv.Atoi(nums[len(nums)/2]))
 	})
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(Part1, "data/day5.txt"), 5651)
-	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day5.txt"), 4743)
+	AssertEq(TimeFunc(Part1, "data/day5.txt"), 5651)
+	AssertEq(TimeFunc(Part2, "data/day5.txt"), 4743)
 }

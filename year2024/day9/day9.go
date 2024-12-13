@@ -1,7 +1,7 @@
 package day9
 
 import (
-	aoc "aoc/util"
+	. "aoc/base/aoc"
 	"container/list"
 	"fmt"
 	"os"
@@ -29,11 +29,11 @@ func dump(disk *list.List) {
 }
 
 func parse(input string) *list.List {
-	data := s.TrimSpace(string(aoc.Try(os.ReadFile(input))))
+	data := s.TrimSpace(string(Try(os.ReadFile(input))))
 	disk := list.New()
 	index := 0
 	for i, c := range data {
-		size := aoc.Try(strconv.Atoi(string(c)))
+		size := Try(strconv.Atoi(string(c)))
 		for j := 0; j < size; j++ {
 			if i%2 == 0 {
 				disk.PushBack(&Block{fid: i / 2, n: 1})
@@ -79,11 +79,11 @@ func Part1(input string) int {
 }
 
 func parse2(input string) *list.List {
-	data := s.TrimSpace(string(aoc.Try(os.ReadFile(input))))
+	data := s.TrimSpace(string(Try(os.ReadFile(input))))
 	disk := list.New()
 	index := 0
 	for i, c := range data {
-		size := aoc.Try(strconv.Atoi(string(c)))
+		size := Try(strconv.Atoi(string(c)))
 		if i%2 == 0 {
 			disk.PushBack(&Block{fid: i / 2, n: size})
 		} else {
@@ -128,6 +128,6 @@ func Part2(input string) int {
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(Part1, "data/day9.txt"), 6356833654075)
-	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day9.txt"), 6389911791746)
+	AssertEq(TimeFunc(Part1, "data/day9.txt"), 6356833654075)
+	AssertEq(TimeFunc(Part2, "data/day9.txt"), 6389911791746)
 }

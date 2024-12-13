@@ -1,7 +1,7 @@
 package day11
 
 import (
-	aoc "aoc/util"
+	. "aoc/base/aoc"
 	"math"
 	"os"
 	"strconv"
@@ -59,8 +59,8 @@ func blink(cache *Cache, stone int, n int) int {
 func solve(input string, n int) int {
 	cache := make(Cache)
 	count := 0
-	for _, x := range s.Fields(string(aoc.Try(os.ReadFile(input)))) {
-		stone := aoc.Try(strconv.Atoi(x))
+	for _, x := range s.Fields(string(Try(os.ReadFile(input)))) {
+		stone := Try(strconv.Atoi(x))
 		count += blink(&cache, stone, n)
 	}
 	return count
@@ -75,6 +75,6 @@ func Part2(input string) int {
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(Part1, "data/day11.txt"), 204022)
-	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day11.txt"), 241651071960597)
+	AssertEq(TimeFunc(Part1, "data/day11.txt"), 204022)
+	AssertEq(TimeFunc(Part2, "data/day11.txt"), 241651071960597)
 }

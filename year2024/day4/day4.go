@@ -1,12 +1,13 @@
 package day4
 
 import (
-	aoc "aoc/util"
+	. "aoc/base/aoc"
+	. "aoc/base/matrix"
 	"os"
 	s "strings"
 )
 
-func is_xmas(grid []string, loc aoc.Point, dir aoc.Point) bool {
+func is_xmas(grid []string, loc Point, dir Point) bool {
 	ok := true
 	for i := 0; i < 4 && ok; i++ {
 		y := loc.Y + (dir.Y * i)
@@ -16,7 +17,7 @@ func is_xmas(grid []string, loc aoc.Point, dir aoc.Point) bool {
 	return ok
 }
 
-func is_x_mas(grid []string, loc aoc.Point) bool {
+func is_x_mas(grid []string, loc Point) bool {
 	if loc.Y > 0 && loc.X > 0 && loc.Y < len(grid)-1 && loc.X < len(grid[loc.Y])-1 {
 		has_a := grid[loc.Y][loc.X] == 'A'
 		has_mas1 := (grid[loc.Y-1][loc.X-1] == 'M' && grid[loc.Y+1][loc.X+1] == 'S') || (grid[loc.Y-1][loc.X-1] == 'S' && grid[loc.Y+1][loc.X+1] == 'M')
@@ -27,12 +28,12 @@ func is_x_mas(grid []string, loc aoc.Point) bool {
 }
 
 func Part1(input string) int {
-	grid := s.Fields(string(aoc.Try(os.ReadFile(input))))
+	grid := s.Fields(string(Try(os.ReadFile(input))))
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
-			for _, dir := range aoc.Dirs {
-				if is_xmas(grid, aoc.Point{X: x, Y: y}, dir) {
+			for _, dir := range Dirs {
+				if is_xmas(grid, Point{X: x, Y: y}, dir) {
 					xmas += 1
 				}
 			}
@@ -42,11 +43,11 @@ func Part1(input string) int {
 }
 
 func Part2(input string) int {
-	grid := s.Fields(string(aoc.Try(os.ReadFile(input))))
+	grid := s.Fields(string(Try(os.ReadFile(input))))
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
-			if is_x_mas(grid, aoc.Point{X: x, Y: y}) {
+			if is_x_mas(grid, Point{X: x, Y: y}) {
 				xmas += 1
 			}
 		}
@@ -55,6 +56,6 @@ func Part2(input string) int {
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(Part1, "data/day4.txt"), 2642)
-	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day4.txt"), 1974)
+	AssertEq(TimeFunc(Part1, "data/day4.txt"), 2642)
+	AssertEq(TimeFunc(Part2, "data/day4.txt"), 1974)
 }

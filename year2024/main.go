@@ -1,6 +1,7 @@
 package main
 
 import (
+	. "aoc/base/aoc"
 	"aoc/day1"
 	"aoc/day10"
 	"aoc/day11"
@@ -13,7 +14,6 @@ import (
 	"aoc/day7"
 	"aoc/day8"
 	"aoc/day9"
-	aoc "aoc/util"
 	"fmt"
 	"os"
 	"strconv"
@@ -25,7 +25,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	switch aoc.Try(strconv.Atoi(os.Args[1])) {
+	switch Try(strconv.Atoi(os.Args[1])) {
 	case 1:
 		day1.Solve()
 	case 2:

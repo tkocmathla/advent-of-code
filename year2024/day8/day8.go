@@ -1,33 +1,34 @@
 package day8
 
 import (
-	aoc "aoc/util"
+	. "aoc/base/aoc"
+	. "aoc/base/matrix"
 	"os"
 	s "strings"
 )
 
-func pairs(locs []aoc.Point) [][2]aoc.Point {
-	var ps [][2]aoc.Point
+func pairs(locs []Point) [][2]Point {
+	var ps [][2]Point
 	for i, p1 := range locs {
 		for _, p2 := range locs[i:] {
 			if p1 == p2 {
 				continue
 			}
-			ps = append(ps, [2]aoc.Point{p1, p2})
+			ps = append(ps, [2]Point{p1, p2})
 		}
 	}
 	return ps
 }
 
-func slope(ps [2]aoc.Point) aoc.Point {
-	return aoc.Point{Y: ps[1].Y - ps[0].Y, X: ps[1].X - ps[0].X}
+func slope(ps [2]Point) Point {
+	return Point{Y: ps[1].Y - ps[0].Y, X: ps[1].X - ps[0].X}
 }
 
-func valid(grid *[]string, loc aoc.Point) bool {
+func valid(grid *[]string, loc Point) bool {
 	return loc.Y >= 0 && loc.X >= 0 && loc.Y < len((*grid)) && loc.X < len((*grid)[0])
 }
 
-func scan(grid *[]string, loc aoc.Point, m aoc.Point, self bool, max_n int, anodes *map[aoc.Point]bool) {
+func scan(grid *[]string, loc Point, m Point, self bool, max_n int, anodes *map[Point]bool) {
 	if !self {
 		loc.Y += m.Y
 		loc.X += m.X
@@ -40,20 +41,20 @@ func scan(grid *[]string, loc aoc.Point, m aoc.Point, self bool, max_n int, anod
 }
 
 func solve(input string, self bool, max_n int) int {
-	grid := s.Split(s.TrimSpace(string(aoc.Try(os.ReadFile(input)))), "\n")
-	locs := make(map[rune][]aoc.Point)
+	grid := s.Split(s.TrimSpace(string(Try(os.ReadFile(input)))), "\n")
+	locs := make(map[rune][]Point)
 	for y := range grid {
 		for x, c := range grid[y] {
 			if c != '.' {
-				locs[c] = append(locs[c], aoc.Point{Y: y, X: x})
+				locs[c] = append(locs[c], Point{Y: y, X: x})
 			}
 		}
 	}
-	anodes := make(map[aoc.Point]bool)
+	anodes := make(map[Point]bool)
 	for c := range locs {
 		for _, p := range pairs(locs[c]) {
 			mpos := slope(p)
-			mneg := aoc.Point{Y: -mpos.Y, X: -mpos.X}
+			mneg := Point{Y: -mpos.Y, X: -mpos.X}
 			scan(&grid, p[0], mneg, self, max_n, &anodes)
 			scan(&grid, p[1], mpos, self, max_n, &anodes)
 		}
@@ -70,6 +71,6 @@ func Part2(input string) int {
 }
 
 func Solve() {
-	aoc.AssertEq(aoc.TimeFunc(Part1, "data/day8.txt"), 271)
-	aoc.AssertEq(aoc.TimeFunc(Part2, "data/day8.txt"), 994)
+	AssertEq(TimeFunc(Part1, "data/day8.txt"), 271)
+	AssertEq(TimeFunc(Part2, "data/day8.txt"), 994)
 }
