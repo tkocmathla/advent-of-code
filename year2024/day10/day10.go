@@ -7,15 +7,11 @@ import (
 	s "strings"
 )
 
-func valid(grid []string, loc Point) bool {
-	return loc.Y >= 0 && loc.X >= 0 && loc.Y < len(grid) && loc.X < len(grid[0])
+func gradual(grid Matrix, from Point, to Point) bool {
+	return to.Valid(grid) && int(grid[to.Y][to.X]-grid[from.Y][from.X]) == 1
 }
 
-func gradual(grid []string, a Point, b Point) bool {
-	return valid(grid, b) && int(grid[b.Y][b.X]-grid[a.Y][a.X]) == 1
-}
-
-func nines(grid []string, loc Point) []Point {
+func nines(grid Matrix, loc Point) []Point {
 	if grid[loc.Y][loc.X] == '9' {
 		return []Point{loc}
 	}

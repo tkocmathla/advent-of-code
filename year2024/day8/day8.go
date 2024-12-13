@@ -3,8 +3,6 @@ package day8
 import (
 	. "aoc/base/aoc"
 	. "aoc/base/matrix"
-	"os"
-	s "strings"
 )
 
 func pairs(locs []Point) [][2]Point {
@@ -24,16 +22,12 @@ func slope(ps [2]Point) Point {
 	return Point{Y: ps[1].Y - ps[0].Y, X: ps[1].X - ps[0].X}
 }
 
-func valid(grid *[]string, loc Point) bool {
-	return loc.Y >= 0 && loc.X >= 0 && loc.Y < len((*grid)) && loc.X < len((*grid)[0])
-}
-
-func scan(grid *[]string, loc Point, m Point, self bool, max_n int, anodes *map[Point]bool) {
+func scan(grid Matrix, loc Point, m Point, self bool, max_n int, anodes *map[Point]bool) {
 	if !self {
 		loc.Y += m.Y
 		loc.X += m.X
 	}
-	for n := 0; n < max_n && valid(grid, loc); n++ {
+	for n := 0; n < max_n && loc.Valid(grid); n++ {
 		(*anodes)[loc] = true
 		loc.Y += m.Y
 		loc.X += m.X
@@ -41,7 +35,7 @@ func scan(grid *[]string, loc Point, m Point, self bool, max_n int, anodes *map[
 }
 
 func solve(input string, self bool, max_n int) int {
-	grid := s.Split(s.TrimSpace(string(Try(os.ReadFile(input)))), "\n")
+	grid := NewMatrix(input)
 	locs := make(map[rune][]Point)
 	for y := range grid {
 		for x, c := range grid[y] {
@@ -55,8 +49,8 @@ func solve(input string, self bool, max_n int) int {
 		for _, p := range pairs(locs[c]) {
 			mpos := slope(p)
 			mneg := Point{Y: -mpos.Y, X: -mpos.X}
-			scan(&grid, p[0], mneg, self, max_n, &anodes)
-			scan(&grid, p[1], mpos, self, max_n, &anodes)
+			scan(grid, p[0], mneg, self, max_n, &anodes)
+			scan(grid, p[1], mpos, self, max_n, &anodes)
 		}
 	}
 	return len(anodes)

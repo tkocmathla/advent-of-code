@@ -1,6 +1,16 @@
 package matrix
 
+import (
+	. "aoc/base/aoc"
+	"os"
+	s "strings"
+)
+
 type Matrix []string
+
+func NewMatrix(file string) Matrix {
+	return s.Split(s.TrimSpace(string(Try(os.ReadFile(file)))), "\n")
+}
 
 type Point struct {
 	X int // Column

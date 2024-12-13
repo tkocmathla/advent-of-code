@@ -3,21 +3,19 @@ package day4
 import (
 	. "aoc/base/aoc"
 	. "aoc/base/matrix"
-	"os"
-	s "strings"
 )
 
-func is_xmas(grid []string, loc Point, dir Point) bool {
+func is_xmas(grid Matrix, loc Point, dir Point) bool {
 	ok := true
 	for i := 0; i < 4 && ok; i++ {
 		y := loc.Y + (dir.Y * i)
 		x := loc.X + (dir.X * i)
-		ok = y >= 0 && x >= 0 && y < len(grid) && x < len(grid[y]) && grid[y][x] == "XMAS"[i]
+		ok = Point{Y: y, X: x}.Valid(grid) && grid[y][x] == "XMAS"[i]
 	}
 	return ok
 }
 
-func is_x_mas(grid []string, loc Point) bool {
+func is_x_mas(grid Matrix, loc Point) bool {
 	if loc.Y > 0 && loc.X > 0 && loc.Y < len(grid)-1 && loc.X < len(grid[loc.Y])-1 {
 		has_a := grid[loc.Y][loc.X] == 'A'
 		has_mas1 := (grid[loc.Y-1][loc.X-1] == 'M' && grid[loc.Y+1][loc.X+1] == 'S') || (grid[loc.Y-1][loc.X-1] == 'S' && grid[loc.Y+1][loc.X+1] == 'M')
@@ -28,7 +26,7 @@ func is_x_mas(grid []string, loc Point) bool {
 }
 
 func Part1(input string) int {
-	grid := s.Fields(string(Try(os.ReadFile(input))))
+	grid := NewMatrix(input)
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
@@ -43,7 +41,7 @@ func Part1(input string) int {
 }
 
 func Part2(input string) int {
-	grid := s.Fields(string(Try(os.ReadFile(input))))
+	grid := NewMatrix(input)
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
