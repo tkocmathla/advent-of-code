@@ -1,16 +1,18 @@
 package matrix
 
+type Matrix []string
+
 type Point struct {
-	X int // column
-	Y int // row
+	X int // Column
+	Y int // Row
 }
 
-func (lhs Point) Add(rhs Point) Point {
-	return Point{X: lhs.X + rhs.X, Y: lhs.Y + rhs.Y}
+func (p1 Point) Add(p2 Point) Point {
+	return Point{X: p1.X + p2.X, Y: p1.Y + p2.Y}
 }
 
-func (loc Point) Valid(grid []string) bool {
-	return loc.Y >= 0 && loc.X >= 0 && loc.Y < len(grid) && loc.X < len(grid[0])
+func (p Point) Valid(m Matrix) bool {
+	return p.Y >= 0 && p.X >= 0 && p.Y < len(m) && p.X < len(m[0])
 }
 
 var N = Point{0, -1}
