@@ -6,6 +6,7 @@ import (
 	"aoc/day10"
 	"aoc/day11"
 	"aoc/day13"
+	"aoc/day14"
 	"aoc/day2"
 	"aoc/day3"
 	"aoc/day4"
@@ -50,6 +51,8 @@ func main() {
 		day11.Solve()
 	case 13:
 		day13.Solve()
+	case 14:
+		day14.Solve()
 	default:
 		fmt.Println("no solution for day", os.Args[1])
 	}
