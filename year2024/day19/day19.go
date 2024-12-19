@@ -2,6 +2,7 @@ package day19
 
 import (
 	. "aoc/base/aoc"
+	. "aoc/base/moremath"
 	"os"
 	s "strings"
 )
@@ -35,24 +36,23 @@ func match(towels []string, pattern string) int {
 	return found
 }
 
-func Part1(input string) int {
+func solve(input string) []int {
 	towels, patterns := parse(input)
-	matched := 0
+	var counts []int
 	for _, pattern := range patterns {
-		if match(towels, pattern) > 0 {
-			matched += 1
+		if count := match(towels, pattern); count > 0 {
+			counts = append(counts, count)
 		}
 	}
-	return matched
+	return counts
+}
+
+func Part1(input string) int {
+	return len(solve(input))
 }
 
 func Part2(input string) int {
-	towels, patterns := parse(input)
-	matched := 0
-	for _, pattern := range patterns {
-		matched += match(towels, pattern)
-	}
-	return matched
+	return Sum(solve(input)...)
 }
 
 func Solve() {
