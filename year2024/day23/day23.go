@@ -45,13 +45,13 @@ func Part1(input string) int {
 	return count
 }
 
-func bronKerbosch(r, p, x set.Set, g Graph, max *set.Set) set.Set {
+func bronKerbosch(r, p, x set.Set, g Graph, max *set.Set) {
 	if len(p) == 0 && len(x) == 0 {
 		if len(r) > len(*max) {
 			*max = r
 		}
 	}
-	for v := range p.Clone() {
+	for v := range p {
 		nbrs := set.New()
 		for _, nbr := range g[v.(string)] {
 			nbrs.Add(nbr)
@@ -62,7 +62,6 @@ func bronKerbosch(r, p, x set.Set, g Graph, max *set.Set) set.Set {
 		p.Remove(v)
 		x.Add(v)
 	}
-	return nil
 }
 
 func maxClique(g Graph) set.Set {
