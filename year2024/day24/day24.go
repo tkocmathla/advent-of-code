@@ -18,29 +18,28 @@ type Wires map[string]bool
 func parse(input string) (Wires, Gates) {
 	chunks := s.Split(s.TrimSpace(string(Try(os.ReadFile(input)))), "\n\n")
 	wires := make(Wires)
+	gates := make(Gates)
+	var name string
 	for _, line := range s.Split(chunks[0], "\n") {
-		var name string
 		var on bool
 		fmt.Sscanf(line, "%3s: %t", &name, &on)
 		wires[name] = on
 	}
-	gates := make(Gates)
 	for _, line := range s.Split(chunks[1], "\n") {
-		var out string
 		var gate Gate
-		fmt.Sscanf(line, "%s %s %s -> %s", &gate.in0, &gate.op, &gate.in1, &out)
-		gates[out] = gate
+		fmt.Sscanf(line, "%s %s %s -> %s", &gate.in0, &gate.op, &gate.in1, &name)
+		gates[name] = gate
 	}
 	return wires, gates
 }
 
-func resolve(wires Wires, gates Gates, gate Gate) bool {
+func eval(wires Wires, gates Gates, gate Gate) bool {
 	in0, has0 := gates[gate.in0]
 	in1, has1 := gates[gate.in1]
 	val0, val1 := wires[gate.in0], wires[gate.in1]
 	if has0 && has1 {
-		val0 = resolve(wires, gates, in0)
-		val1 = resolve(wires, gates, in1)
+		val0 = eval(wires, gates, in0)
+		val1 = eval(wires, gates, in1)
 	}
 	switch gate.op {
 	case "AND":
@@ -49,8 +48,9 @@ func resolve(wires Wires, gates Gates, gate Gate) bool {
 		return val0 || val1
 	case "XOR":
 		return val0 != val1
+	default:
+		panic("unknown op")
 	}
-	panic("")
 }
 
 func Part1(input string) int {
@@ -61,15 +61,13 @@ func Part1(input string) int {
 		if !has {
 			break
 		}
-		bit := resolve(wires, gates, gate)
+		bit := eval(wires, gates, gate)
 		if bit {
 			ans |= 1 << i
 		}
 	}
 	return ans
 }
-
-//func Part2(input string) int { }
 
 func Solve() {
 	AssertEq(TimeFunc(Part1, "data/day24_test1.txt"), 4)
