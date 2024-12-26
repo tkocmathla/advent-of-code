@@ -3,12 +3,10 @@ package day10
 import (
 	. "aoc/base/aoc"
 	. "aoc/base/matrix"
-	"os"
-	s "strings"
 )
 
 func gradual(grid Matrix, from Point, to Point) bool {
-	return to.Valid(grid) && int(grid[to.Y][to.X]-grid[from.Y][from.X]) == 1
+	return grid.Valid(to) && int(grid[to.Y][to.X]-grid[from.Y][from.X]) == 1
 }
 
 func nines(grid Matrix, loc Point) []Point {
@@ -36,7 +34,7 @@ func nines(grid Matrix, loc Point) []Point {
 }
 
 func solve(input string, all bool) int {
-	grid := s.Split(s.TrimSpace(string(Try(os.ReadFile(input)))), "\n")
+	grid := NewMatrixFromFile(input)
 	scores := 0
 	for y := range grid {
 		for x, c := range grid[y] {

@@ -27,7 +27,7 @@ func scan(grid Matrix, loc Point, m Point, self bool, max_n int, anodes *map[Poi
 		loc.Y += m.Y
 		loc.X += m.X
 	}
-	for n := 0; n < max_n && loc.Valid(grid); n++ {
+	for n := 0; n < max_n && grid.Valid(loc); n++ {
 		(*anodes)[loc] = true
 		loc.Y += m.Y
 		loc.X += m.X
@@ -35,7 +35,7 @@ func scan(grid Matrix, loc Point, m Point, self bool, max_n int, anodes *map[Poi
 }
 
 func solve(input string, self bool, max_n int) int {
-	grid := NewMatrix(input)
+	grid := NewMatrixFromFile(input)
 	locs := make(map[rune][]Point)
 	for y := range grid {
 		for x, c := range grid[y] {

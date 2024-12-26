@@ -8,11 +8,11 @@ import (
 	s "strings"
 )
 
-func valid(mm MutableMatrix, p Point) bool {
-	return mm.Get(p) != '#'
+func valid(m Matrix, p Point) bool {
+	return m.Get(p) != '#'
 }
 
-func shortest(mem MutableMatrix) int {
+func shortest(mem Matrix) int {
 	start := Point{Y: 0, X: 0}
 	dist := make(map[Point]int)
 	for y := range mem {
@@ -53,9 +53,9 @@ func parse(input string) []Point {
 	return bytes
 }
 
-func setup(input string) ([]Point, MutableMatrix) {
+func setup(input string) ([]Point, Matrix) {
 	w, h, n := 71, 71, 1024
-	mem := NewMutableMatrix(w, h, '.')
+	mem := NewMatrix(w, h, '.')
 	bytes := parse(input)
 	for _, b := range bytes[:n] {
 		mem[b.Y][b.X] = '#'

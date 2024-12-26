@@ -7,16 +7,12 @@ import (
 	s "strings"
 )
 
-type Matrix []string
+// Matrix is a row-major 2D slice of runes.
+type Matrix [][]rune
 
-func NewMatrix(file string) Matrix {
-	return s.Split(s.TrimSpace(string(Try(os.ReadFile(file)))), "\n")
-}
-
-type MutableMatrix [][]rune
-
-func NewMutableMatrix(w int, h int, init rune) MutableMatrix {
-	var m MutableMatrix
+// NewMatrix returns a new `w`x`h` Matrix with all cells set to `init`.
+func NewMatrix(w int, h int, init rune) Matrix {
+	var m Matrix
 	for i := 0; i < h; i++ {
 		var row []rune
 		for j := 0; j < w; j++ {
@@ -27,59 +23,57 @@ func NewMutableMatrix(w int, h int, init rune) MutableMatrix {
 	return m
 }
 
-func NewMutableMatrixFromString(data string) MutableMatrix {
-	var mm MutableMatrix
+// NewMatrixFromString returns a new Matrix parsed from the given string.
+func NewMatrixFromString(data string) Matrix {
+	var m Matrix
 	for _, line := range s.Split(s.TrimSpace(data), "\n") {
 		var row []rune
 		for _, char := range line {
 			row = append(row, char)
 		}
-		mm = append(mm, row)
+		m = append(m, row)
 	}
-	return mm
+	return m
 }
 
-func NewMutableMatrixFromFile(file string) MutableMatrix {
-	return NewMutableMatrixFromString(string(Try(os.ReadFile(file))))
+// NewMatrixFromFile returns a new Matrix parsed from the given file.
+func NewMatrixFromFile(file string) Matrix {
+	return NewMatrixFromString(string(Try(os.ReadFile(file))))
 }
 
-func (mm MutableMatrix) Print() {
-	for _, row := range mm {
+// Print dumps the matrix to stdout.
+func (m Matrix) Print() {
+	for _, row := range m {
 		fmt.Println(string(row))
 	}
 }
 
-func (mm MutableMatrix) Valid(p Point) bool {
-	return p.Y >= 0 && p.X >= 0 && p.Y < len(mm) && p.X < len(mm[0])
+// Valid returns true if the given Point is within the bounds of the Matrix.
+func (m Matrix) Valid(p Point) bool {
+	return p.Y >= 0 && p.X >= 0 && p.Y < len(m) && p.X < len(m[0])
 }
 
-func (mm MutableMatrix) ValidIf(p Point, f func(MutableMatrix, Point) bool) bool {
-	return mm.Valid(p) && f(mm, p)
+// ValidIf returns true if the given Point is Valid and f(m, p) returns true.
+func (m Matrix) ValidIf(p Point, f func(Matrix, Point) bool) bool {
+	return m.Valid(p) && f(m, p)
 }
 
-func (mm MutableMatrix) Get(p Point) rune {
-	return mm[p.Y][p.X]
-}
-
-func (m Matrix) Get(p Point) byte {
+// Get returns the rune at the given Point.
+func (m Matrix) Get(p Point) rune {
 	return m[p.Y][p.X]
 }
 
+// ===--------------------------------------------------------------------=== //
+
+// Point is a 2D coordinate.
 type Point struct {
 	X int // Column
 	Y int // Row
 }
 
+// Add returns a new Point that is the sum of `p1` and `p2`.
 func (p1 Point) Add(p2 Point) Point {
 	return Point{X: p1.X + p2.X, Y: p1.Y + p2.Y}
-}
-
-func (p Point) Valid(m Matrix) bool {
-	return p.Y >= 0 && p.X >= 0 && p.Y < len(m) && p.X < len(m[0])
-}
-
-func (p Point) ValidIf(m Matrix, f func(Matrix, Point) bool) bool {
-	return p.Valid(m) && f(m, p)
 }
 
 var N = Point{0, -1}

@@ -12,7 +12,7 @@ func parse(input string) ([][]int, [][]int) {
 	var keys [][]int
 	schematics := s.Split(s.TrimSpace(string(Try(os.ReadFile(input)))), "\n\n")
 	for _, raw := range schematics {
-		m := NewMutableMatrixFromString(raw)
+		m := NewMatrixFromString(raw)
 		var schematic []int
 		for x := range m[0] {
 			var height int

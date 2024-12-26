@@ -10,7 +10,7 @@ func is_xmas(grid Matrix, loc Point, dir Point) bool {
 	for i := 0; i < 4 && ok; i++ {
 		y := loc.Y + (dir.Y * i)
 		x := loc.X + (dir.X * i)
-		ok = Point{Y: y, X: x}.Valid(grid) && grid[y][x] == "XMAS"[i]
+		ok = grid.Valid(Point{Y: y, X: x}) && grid[y][x] == rune("XMAS"[i])
 	}
 	return ok
 }
@@ -26,7 +26,7 @@ func is_x_mas(grid Matrix, loc Point) bool {
 }
 
 func Part1(input string) int {
-	grid := NewMatrix(input)
+	grid := NewMatrixFromFile(input)
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
@@ -41,7 +41,7 @@ func Part1(input string) int {
 }
 
 func Part2(input string) int {
-	grid := NewMatrix(input)
+	grid := NewMatrixFromFile(input)
 	xmas := 0
 	for y := range grid {
 		for x := range grid[y] {
