@@ -8,14 +8,14 @@ IN: day1
 
 ! Part 1 -------------------------------------------------------
 
-: turn ( state move -- next-state )
+: turn1 ( state move -- next-state )
     swap first2
     [ + 100 mod ] dip
     over zero? [ 1 + ] when
     2array ;
 
 : part1 ( lines -- n )
-    [ parse ] map { 50 0 } [ turn ] reduce second ;
+    [ parse ] map { 50 0 } [ turn1 ] reduce second ;
 
 ! Part 2 -------------------------------------------------------
 
