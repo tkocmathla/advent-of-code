@@ -4,6 +4,16 @@ IN: day2
 : parse ( line -- ranges )
     "," split [ "-" split [ string>number ] map ] map ;
 
+: singleton? ( seq -- ? ) >hash-set cardinality 1 = ;
+
+:: solve-range ( f range -- n )
+    range first2 [a..b] [
+        dup f call( x -- ? ) [ ] [ drop 0 ] if
+    ] map sum ;
+
+:: solve ( f input -- n )
+    input parse [ f swap solve-range ] map sum ;
+
 ! Part 1 -------------------------------------------------------
 
 : halve ( str -- l r )
@@ -12,27 +22,21 @@ IN: day2
 
 : invalid? ( x -- ? )
     number>string
-    [ halve = ] [ length even? ] [ >hash-set cardinality 1 = ] tri
+    [ halve = ] [ length even? ] [ singleton? ] tri
     and or ;
 
-: solve ( range -- n )
-    first2 [a..b] [ dup invalid? [ ] [ drop 0 ] if ] map sum ;
+: part1 ( input -- n ) [ invalid? ] swap solve ;
 
-: part1 ( line -- n ) parse [ solve ] map sum ;
 
 ! Part 2 -------------------------------------------------------
 
 :: invalid2? ( x -- ? )
     x number>string :> s
-    1 s length 2 /i [a..b] [
-        s swap group >hash-set cardinality 1 =
-    ] any?
+    1 s length 2 /i [a..b] [ s swap group singleton? ] any?
     s length 1 > and ;
 
-: solve2 ( range -- n )
-    first2 [a..b] [ dup invalid2? [ ] [ drop 0 ] if ] map sum ;
+: part2 ( input -- n ) [ invalid2? ] swap solve ;
 
-: part2 ( line -- n ) parse [ solve2 ] map sum ;
 
 ! Tests --------------------------------------------------------
 
