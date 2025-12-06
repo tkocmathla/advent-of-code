@@ -1,35 +1,32 @@
 USING: arrays assocs hashtables io.encodings.utf8 io.files kernel locals math prettyprint ranges sequences sequences.extras vectors ;
 IN: day3
 
-:: imap ( s -- m )
-    H{ } clone :> m
-    s [| ch i | i ch m push-at ] each-index
-    m ;
+: index-pairs ( s -- v )
+    >array [ 2array ] map-index
+    [ [ first neg ] [ second ] bi 2array ] sort-by ;
 
-:: left ( m s -- i )
-    CHAR: 0 CHAR: 9 [a..b] reverse
-    [| ch | ch m at length 0 > [ ch m at ] [ { } ] if ] map-concat
-    [| i | i s length 1 - = not ] find swap drop ;
+:: solve-one ( pairs lo hi -- ans )
+    pairs [ second dup lo >= swap hi < and ] find nip ;
 
-:: right ( m i -- j )
-    CHAR: 0 CHAR: 9 [a..b] reverse
-    [| ch | ch m at length 0 > [ ch m at ] [ { } ] if ] map-concat
-    [| j | j i > ] find swap drop ;
+:: solve ( pairs n -- ans )
+    pairs length n - 1 + :> hi
+    0 n [a..b)
+    { 0 hi { } }
+    [| state _ |
+        state first3 :> ( lo hi chs )
+        pairs lo hi solve-one first2 :> ( ch i )
+        i 1 + dup hi 1 + max chs ch suffix 3array
+    ] reduce
+    last >string string>number ;
 
-:: numberify ( i j s -- x )
-    i s nth
-    j s nth
-    2array >string string>number ;
+: part1 ( lines -- n ) [ index-pairs 2 solve ] map sum ;
 
-:: jolts ( s -- ij )
-    s imap :> m
-    m s left :> i
-    m i right :> j
-    i j s numberify ;
-
-: part1 ( batteries -- ns ) [ jolts ] map sum ;
+: part2 ( lines -- n ) [ index-pairs 12 solve ] map sum ;
 
 ! Tests --------------------------------------------------------
 
 { 357 } [ "day3/day3_test.txt" utf8 file-lines part1 ] unit-test
 { 16858 } [ "day3/day3.txt" utf8 file-lines part1 ] unit-test
+
+{ 3121910778619 } [ "day3/day3_test.txt" utf8 file-lines part2 ] unit-test
+{ 167549941654721 } [ "day3/day3.txt" utf8 file-lines part2 ] unit-test
