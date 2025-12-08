@@ -23,10 +23,10 @@ IN: day5
 
 : part2 ( ranges -- ans )
     >sorted-intervals { empty-interval }
-    [| acc curr |
-        acc last curr interval-union :> prev'
-        acc last curr interval-intersect empty-interval =
-        [ acc curr suffix ] [ acc but-last prev' suffix ] if
+    [| ivs curr |
+        ivs last curr interval-union :> prev'
+        ivs last curr interval-intersect empty-interval =
+        [ ivs curr suffix ] [ ivs but-last prev' suffix ] if
     ] reduce
     rest
     fresh ;
