@@ -1,41 +1,53 @@
-USING: arrays assocs hashtables io.encodings.utf8 io.files kernel locals math prettyprint ranges sequences sequences.extras vectors ;
+USING: arrays assocs hashtables io.encodings.utf8 io.files kernel locals math prettyprint ranges sequences sequences.extras sets vectors ;
 IN: day4
-CONSTANT: dirs
+CONSTANT: dxdys
     { { -1 -1 } { -1 0 } { -1 1 }
       {  0 -1 }          {  0 1 }
       {  1 -1 } {  1 0 } {  1 1 } }
 
-:: cell ( grid row col -- ch ) row grid nth col swap nth ;
+:: parse-one ( line row -- papers )
+    line [ CHAR: @ = ] find-all [ first row swap 2array ] map ;
 
-: paper? ( grid row col -- ? ) cell CHAR: @ = ;
+: parse ( lines -- papers )
+    [ parse-one ] map-index concat >hash-set ;
 
-:: in-bounds? ( grid row col -- ? )
-    grid length :> rows
-    0 grid nth length :> cols
-    row 0 >= col 0 >= and
-    row rows < and col cols < and ;
+:: neighbor ( row col dxdy -- nbr )
+    dxdy first2 :> ( dx dy )
+    row dy + col dx + 2array ;
 
 :: neighbors ( row col -- nbrs )
-    dirs
-    [| dxdy |
-        dxdy first2 :> ( dx dy )
-        row dy + col dx + 2array
-    ] map ;
+    dxdys [ row col rot neighbor ] map >hash-set ;
 
-:: valid? ( grid row col -- ? )
-    row col neighbors
-    [| elt | grid elt first2 in-bounds? ] filter
-    [| elt | grid elt first2 paper? ] count
-    4 < ;
+:: solve ( papers -- kills )
+    papers members
+    [| paper |
+        paper first2 neighbors :> nbrs
+        nbrs papers intersect cardinality 4 <
+    ] filter >hash-set ;
 
-:: part1 ( grid -- n )
-    0 grid length [a..b) [| row |
-        0 0 grid nth length [a..b) [| col |
-            grid row col [ paper? ] [ valid? ] 3bi and
-        ] count
-    ] map sum ;
+: part1 ( papers -- x ) solve cardinality ;
+
+:: part2 ( papers -- papers )
+    papers
+    [| papers |
+        papers solve :> kills
+        papers kills diff :> papers'
+        papers' kills cardinality 0 >
+    ]
+    [ dup ] produce nip :> acc
+
+    acc { papers 0 }
+    [| state next |
+        state first2 :> ( prev x )
+        prev next diff cardinality x + :> kills
+        { next kills }
+    ]
+    reduce second ;
 
 ! Tests --------------------------------------------------------
 
-{ 13 } [ "day4/day4_test.txt" utf8 file-lines part1 ] unit-test
-{ 1508 } [ "day4/day4.txt" utf8 file-lines part1 ] unit-test
+{ 13 } [ "day4/day4_test.txt" utf8 file-lines parse part1 ] unit-test
+{ 1508 } [ "day4/day4.txt" utf8 file-lines parse part1 ] unit-test
+
+{ 43 } [ "day4/day4_test.txt" utf8 file-lines parse part2 ] unit-test
+{ 8538 } [ "day4/day4.txt" utf8 file-lines parse part2 ] unit-test
