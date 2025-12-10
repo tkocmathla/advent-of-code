@@ -13,18 +13,16 @@ IN: day8
     [ second ] sort-by
     [ first ] map ;
 
+:: update-ckts ( ckts xyz1 xyz2 -- )
+    xyz1 ckts disjoint-set-member? not [ xyz1 ckts add-atom ] when
+    xyz2 ckts disjoint-set-member? not [ xyz2 ckts add-atom ] when
+    xyz1 xyz2 ckts equate ;
+
 ! Part 1 -------------------------------------------------------
 
 :: part1 ( xyzs n -- ans )
     xyzs pairs n head
-    <disjoint-set>
-    [| ckts elt |
-        elt first2 :> ( xyz1 xyz2 )
-        xyz1 ckts disjoint-set-member? not [ xyz1 ckts add-atom ] when
-        xyz2 ckts disjoint-set-member? not [ xyz2 ckts add-atom ] when
-        xyz1 xyz2 ckts equate
-        ckts
-    ] reduce
+    <disjoint-set> [ dupd first2 update-ckts ] reduce
     counts>> values sort 3 tail* product ;
 
 ! Part 2 -------------------------------------------------------
@@ -35,11 +33,7 @@ IN: day8
     <disjoint-set> :> ckts
     xyzs pairs
     [| pairs |
-        pairs first first2 :> ( xyz1 xyz2 )
-        xyz1 ckts disjoint-set-member? not [ xyz1 ckts add-atom ] when
-        xyz2 ckts disjoint-set-member? not [ xyz2 ckts add-atom ] when
-        xyz1 xyz2 ckts equate
-
+        ckts pairs first first2 update-ckts
         pairs rest ckts n singleton? not
     ] [ dup first ] produce nip last
     [ first ] map product ;
@@ -50,4 +44,4 @@ IN: day8
 { 129564 } [ "day8/day8.txt" utf8 file-lines parse 1000 part1 ] unit-test
 
 { 25272 } [ "day8/day8_test.txt" utf8 file-lines parse 20 part2 ] unit-test
-{ 1 } [ "day8/day8.txt" utf8 file-lines parse 1000 part2 ] unit-test
+{ 42047840 } [ "day8/day8.txt" utf8 file-lines parse 1000 part2 ] unit-test
