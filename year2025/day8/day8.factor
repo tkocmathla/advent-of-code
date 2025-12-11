@@ -34,7 +34,7 @@ IN: day8
     xyzs pairs
     [| pairs |
         ckts pairs first first2 update-ckts
-        pairs rest ckts n singleton? not
+        pairs rest-slice ckts n singleton? not
     ] [ dup first ] produce nip last
     [ first ] map product ;
 
